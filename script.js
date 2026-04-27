@@ -93,10 +93,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     // Hide splash screen
-    setTimeout(() => {
+    const hideSplash = () => {
         document.getElementById('splash').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
-    }, 1500);
+    };
+    setTimeout(hideSplash, 1500);
 });
 
 async function loadData() {
@@ -275,6 +276,13 @@ function renderHome() {
         const card = document.createElement('div');
         const isCompleted = totalEx > 0 && completedEx === totalEx;
         const isToday = wk.date === getTodayDateStr();
+        
+        const plateauCountTotal = wk.exercises.reduce((acc, ex) => {
+            const count = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date, wk.id);
+            return count >= 2 ? acc + 1 : acc;
+        }, 0);
+        const plateauSummaryHtml = plateauCountTotal > 0 ? `<div class="plateau-indicator" title="Упражнений на плато">${plateauCountTotal}×</div>` : '';
+
         let cardClass = 'workout-card';
         if (isCompleted) cardClass += ' is-completed';
         else if (isToday) cardClass += ' is-active';
@@ -285,6 +293,7 @@ function renderHome() {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     ${formatDateDisplay(wk.date)}
                 </div>
+                ${plateauSummaryHtml}
                 <button class="icon-btn-small btn-duplicate" data-id="${wk.id}" title="Повторить тренировку">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 </button>
@@ -480,7 +489,7 @@ function renderEditExercises() {
     currentWorkoutData.exercises.forEach((ex, index) => {
         const exEl = document.createElement('div');
         exEl.className = 'exercise-edit-card';
-        const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, currentWorkoutData.date);
+        const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, currentWorkoutData.date, currentWorkoutData.id);
         const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}×</div>` : '';
         
         exEl.innerHTML = `
@@ -534,6 +543,12 @@ function renderEditExercises() {
     const updateExData = (e, field) => {
         const index = parseInt(e.target.getAttribute('data-index'));
         currentWorkoutData.exercises[index][field] = e.target.value;
+        
+        // Update plateau badge in real-time
+        if (field === 'name' || field === 'weight' || field === 'reps') {
+            const cardEl = e.target.closest('.exercise-edit-card');
+            updateCardPlateauBadge(cardEl, currentWorkoutData.exercises[index]);
+        }
     };
     
     document.querySelectorAll('.ex-name').forEach(el => el.addEventListener('input', e => updateExData(e, 'name')));
@@ -591,6 +606,10 @@ async function saveWorkout() {
     
     showToast('Тренировка сохранена');
     
+    // Check for iOS congratulation
+    const showedCongrat = checkAndShowiOSCongratulation(currentWorkoutData);
+    if (showedCongrat) return;
+
     if (editingWorkoutId) {
         openWorkoutView(currentWorkoutData.id); // Go back to view
     } else {
@@ -640,7 +659,7 @@ function renderViewExercises(wk) {
             statsHtml += `<div class="stat-chip">${ex.weight} кг</div>`;
         }
         
-        const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date);
+        const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date, wk.id);
         const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}×</div>` : '';
         
         exEl.innerHTML = `
@@ -695,19 +714,64 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     
     updateProgress(wk);
     renderHome(); // Update home screen stats silently
+    
+    // Check for iOS congratulation when checking off the last item
+    checkAndShowiOSCongratulation(wk);
 }
 
-function getPlateauCount(exerciseName, weight, reps, currentWorkoutDate) {
+function updateCardPlateauBadge(cardEl, exercise) {
+    const badge = cardEl.querySelector('.plateau-indicator');
+    const count = getPlateauCount(exercise.name, exercise.weight, exercise.reps, currentWorkoutData.date, currentWorkoutData.id);
+    
+    if (count >= 2) {
+        if (badge) {
+            badge.textContent = `${count}×`;
+            badge.classList.remove('hidden');
+        } else {
+            const newBadge = document.createElement('div');
+            newBadge.className = 'plateau-indicator';
+            newBadge.textContent = `${count}×`;
+            const header = cardEl.querySelector('.exercise-edit-header');
+            if (header) header.appendChild(newBadge);
+        }
+    } else if (badge) {
+        badge.classList.add('hidden');
+    }
+}
+
+function getPlateauCount(exerciseName, weight, reps, currentWorkoutDate, currentWorkoutId) {
     if (!exerciseName || !weight || !reps) return 1;
     
     let count = 1;
-    const sortedWorkouts = [...appData.workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
-    const olderWorkouts = sortedWorkouts.filter(w => w.date < currentWorkoutDate);
+    // Sort all workouts by date newest first, then by ID (which is time-based)
+    const sortedWorkouts = [...appData.workouts].sort((a, b) => {
+        if (b.date !== a.date) return new Date(b.date) - new Date(a.date);
+        return b.id.localeCompare(a.id);
+    });
+
+    // We want workouts that are older or same-day but not the current one
+    const olderWorkouts = sortedWorkouts.filter(w => {
+        if (w.id === currentWorkoutId) return false;
+        if (w.date < currentWorkoutDate) return true;
+        if (w.date === currentWorkoutDate) {
+            // Same day: use ID comparison (id is generated with Date.now().toString(36))
+            // But wait, the ID might not be perfectly chronological if generated very close.
+            // Still, for same-day, we just need a consistent "previous".
+            return w.id < currentWorkoutId; 
+        }
+        return false;
+    });
 
     for (const wk of olderWorkouts) {
         const matchingEx = wk.exercises.find(ex => ex.name.trim().toLowerCase() === exerciseName.trim().toLowerCase());
         if (matchingEx) {
-            if (String(matchingEx.weight) === String(weight) && String(matchingEx.reps) === String(reps)) {
+            // Compare as numbers to handle "100" vs "100.0"
+            const w1 = parseFloat(matchingEx.weight);
+            const w2 = parseFloat(weight);
+            const r1 = parseInt(matchingEx.reps);
+            const r2 = parseInt(reps);
+            
+            if (!isNaN(w1) && !isNaN(w2) && w1 === w2 && !isNaN(r1) && !isNaN(r2) && r1 === r2) {
                 count++;
             } else {
                 break;
@@ -717,6 +781,73 @@ function getPlateauCount(exerciseName, weight, reps, currentWorkoutDate) {
         }
     }
     return count;
+}
+
+// ── iOS confetti helpers ──────────────────────────────────────────────────
+function spawnConfetti() {
+    const container = document.getElementById('ios-confetti-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const symbols = ['\u2665', '\u2726', '\u2605', '\u2728', '\u2661', '\u2733'];
+    const colors  = ['#ff69b4','#e83e8c','#FFD700','#FFA500','#ff1493','#fffbe0','#ff85c2'];
+
+    for (let i = 0; i < 38; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-particle';
+        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        const size   = (0.85 + Math.random() * 1.45).toFixed(2);
+        const delay  = (Math.random() * 2.2).toFixed(2);
+        const dur    = (2.2 + Math.random() * 3.0).toFixed(2);
+        el.style.cssText = [
+            `left:${(Math.random() * 102).toFixed(1)}%`,
+            `top:${(-8 - Math.random() * 18).toFixed(1)}%`,
+            `color:${colors[Math.floor(Math.random() * colors.length)]}`,
+            `font-size:${size}rem`,
+            `animation-delay:${delay}s`,
+            `animation-duration:${dur}s`
+        ].join(';');
+        container.appendChild(el);
+    }
+}
+
+function clearConfetti() {
+    const c = document.getElementById('ios-confetti-container');
+    if (c) c.innerHTML = '';
+}
+
+// ── Main iOS congratulation logic ─────────────────────────────────────────
+function checkAndShowiOSCongratulation(wk) {
+    const isIPhone = navigator.userAgent.includes('iPhone');
+    if (!isIPhone) return false;
+
+    const total = wk.exercises.length;
+    const done  = wk.exercises.filter(e => e.done).length;
+
+    if (total > 0 && done === total) {
+        const overlay = document.getElementById('ios-congratulations');
+        if (overlay) {
+            spawnConfetti();
+            overlay.classList.remove('hidden');
+
+            // Double rAF ensures transition fires after display:block
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                overlay.classList.add('active');
+            }));
+
+            // Hold for 3 s, then fade out (200 ms) + navigate
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    clearConfetti();
+                    navigateTo('home');
+                }, 600);
+            }, 3000);
+            return true;
+        }
+    }
+    return false;
 }
 
 // --- Drag and Drop ---
