@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <!-- HARD FIX: light bg applied before ANY CSS to eliminate dark flash -->
+  <meta name="theme-color" content="#f8f9fa" />
+  <style>html,body{background-color:#f8f9fa!important;}</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="GymTracker" />
+  <meta name="description" content="Современный трекер тренировок в зале" />
+  <title>GymTracker — Тренировки</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png" />
+  <!-- Dynamic theme script: overrides bg based on saved user preference -->
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('gymtracker_theme') || 'light';
+        var bg = theme === 'light' ? '#f8f9fa' : '#0a1f33';
+        document.documentElement.style.backgroundColor = bg;
+        document.querySelector('meta[name="theme-color"]').content = bg;
+      } catch(e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="light-theme" style="background-color: #f8f9fa;">
+
+  <!-- ══ SPLASH SCREEN ══ -->
+  <div id="splash" class="splash">
+    <div class="splash-logo">
+      <div class="splash-icon">
+        <img src="icons/rabbit_girl_new.png" alt="GymTracker Logo" class="splash-img" id="splash-avatar">
+      </div>
+      <div class="splash-title">GymTracker</div>
+    </div>
+  </div>
+
+  <!-- ══ APP SHELL ══ -->
+  <div id="app" class="app hidden">
+
+    <!-- ═══ SCREEN: HOME ═══ -->
+    <div id="screen-home" class="screen active">
+      <header class="header header-centered">
+        <div class="header-actions-left">
+          <button class="icon-btn-ghost" id="btn-settings" title="Настройки">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </button>
+          <button class="icon-btn-ghost" id="btn-favorites-manage" title="Избранные упражнения">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+        <div class="header-clock-group">
+          <img src="icons/rabbit_girl_new.png" alt="Mascot" class="header-avatar" id="header-avatar">
+          <div id="live-clock" class="live-clock">00:00:00</div>
+        </div>
+        <div class="header-actions-right">
+          <button class="icon-btn-ghost" id="btn-history" title="История (Календарь)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </button>
+          <button class="icon-btn-ghost" id="btn-theme-toggle" title="Сменить тему">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="content-scroll" id="home-content">
+        <!-- Workouts list renders here -->
+        <div id="workouts-list" class="workouts-list"></div>
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-icon">
+            <img src="icons/rabbit_girl_new.png" alt="Empty State Icon" class="empty-img" id="empty-avatar">
+          </div>
+          <p class="empty-title">Нет тренировок</p>
+          <p class="empty-desc">Нажми кнопку ниже, чтобы начать первую тренировку!</p>
+        </div>
+      </div>
+
+      <div class="bottom-bar">
+        <button id="btn-new-workout" class="btn-primary btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Начать тренировку
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ SCREEN: NEW / EDIT WORKOUT ═══ -->
+    <div id="screen-workout" class="screen">
+      <header class="header">
+        <div class="header-left">
+          <button class="icon-btn back-btn" id="btn-back-home">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <h2 class="header-title" id="workout-screen-title">Новая тренировка</h2>
+        </div>
+        <div class="header-right">
+          <button class="btn-save" id="btn-save-workout">Сохранить</button>
+        </div>
+      </header>
+
+      <div class="content-scroll" id="workout-content">
+        <!-- Workout Meta -->
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-group half">
+              <label class="form-label">Дата</label>
+              <input type="date" id="workout-date" class="form-input" />
+            </div>
+            <div class="form-group half">
+              <label class="form-label">Название</label>
+              <input type="text" id="workout-name" class="form-input" placeholder="Фуллб2" maxlength="30" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Exercises -->
+        <div class="section-header">
+          <span class="section-title">Упражнения</span>
+          <span class="exercises-count" id="exercises-count">0</span>
+        </div>
+
+        <div id="exercises-list" class="exercises-list">
+          <!-- Exercise cards render here -->
+        </div>
+
+        <button id="btn-add-exercise" class="btn-add-exercise">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Добавить упражнение
+        </button>
+
+        <div style="height: 100px;"></div>
+      </div>
+    </div>
+
+    <!-- ═══ SCREEN: VIEW WORKOUT ═══ -->
+    <div id="screen-view" class="screen">
+      <header class="header">
+        <div class="header-left">
+          <button class="icon-btn back-btn" id="btn-back-view">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div>
+            <h2 class="header-title" id="view-title">Тренировка</h2>
+            <p class="header-subtitle" id="view-date"></p>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="icon-btn" id="btn-edit-workout" title="Редактировать">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="icon-btn danger-btn" id="btn-delete-workout" title="Удалить">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="content-scroll" id="view-content">
+        <div class="progress-bar-container">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <span class="progress-text" id="progress-text">0 / 0</span>
+        </div>
+
+        <div id="view-exercises-list" class="exercises-list view-mode">
+          <!-- View exercise cards render here -->
+        </div>
+        <div style="height: 40px;"></div>
+      </div>
+    </div>
+
+  </div><!-- /#app -->
+
+  <!-- ══ MODAL: SETTINGS ══ -->
+  <div id="modal-settings" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ Настройки</h3>
+        <button class="icon-btn" id="btn-close-settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-theme-section">
+          <p class="settings-label">CURRENT THEME</p>
+          <button class="btn-primary btn-lg" id="btn-save-settings">Переключить тему</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: FAVORITES MANAGER ══ -->
+  <div id="modal-favorites" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Избранные упражнения</h3>
+        <button class="icon-btn" id="btn-close-favorites">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="add-favorite-row">
+          <input type="text" id="new-favorite-input" class="form-input" placeholder="Название упражнения..." maxlength="50" />
+          <button class="btn-primary btn-sm" id="btn-add-favorite">Добавить</button>
+        </div>
+        <div id="favorites-list" class="favorites-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: CONFIRM DELETE ══ -->
+  <div id="modal-confirm" class="modal-overlay hidden">
+    <div class="modal-dialog">
+      <h3 class="modal-dialog-title">Удалить тренировку?</h3>
+      <p class="modal-dialog-text">Это действие нельзя отменить.</p>
+      <div class="modal-dialog-actions">
+        <button class="btn-ghost" id="btn-confirm-cancel">Отмена</button>
+        <button class="btn-danger" id="btn-confirm-delete">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: CALENDAR ══ -->
+  <div id="modal-calendar" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h3 class="modal-title">📅 История</h3>
+        <button class="icon-btn" id="btn-close-calendar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="calendar-container" class="calendar-container">
+          <div class="calendar-header">
+            <h3 id="calendar-month-year">Апрель 2026</h3>
+          </div>
+          <div id="calendar-grid" class="calendar-grid"></div>
+        </div>
+        
+        <!-- Day Summary -->
+        <div id="day-summary" class="day-summary-card hidden">
+          <div class="day-summary-header">
+            <h4 id="summary-date">25 апреля</h4>
+            <button class="close-summary" id="btn-close-summary">&times;</button>
+          </div>
+          <div id="summary-content" class="summary-content"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ GIANT CLOCK OVERLAY ══ -->
+  <div id="giant-clock-overlay" class="giant-clock-overlay hidden">
+    <div id="giant-clock-text" class="giant-clock-text">00:00:00</div>
+  </div>
+
+  <!-- ══ TOAST ══ -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
