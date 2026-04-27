@@ -432,3 +432,21 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 /* Toast */
 .toast { position: fixed; bottom: 3rem; left: 50%; transform: translateX(-50%) translateY(0); background: var(--text-main); color: var(--bg-color); padding: 0.875rem 1.5rem; border-radius: 100px; font-weight: 700; font-size: 0.875rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 10001; transition: all 0.4s cubic-bezier(0.25, 1, 0.2, 1); display: flex; align-items: center; gap: 0.5rem; }
 .toast.hidden { opacity: 0; transform: translateX(-50%) translateY(20px); pointer-events: none; }
+
+/* Drag and Drop Styles */
+.sortable-chosen {
+  opacity: 1 !important;
+  transform: scale(1.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px var(--primary-color) !important;
+  z-index: 100;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s ease !important;
+}
+
+.sortable-ghost {
+  opacity: 0.3 !important;
+  background: var(--surface-color-light) !important;
+}
+
+.sortable-drag {
+  opacity: 0;
+}

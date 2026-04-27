@@ -516,6 +516,8 @@ function renderEditExercises() {
         exercisesList.appendChild(exEl);
     });
     
+    initSortable('exercises-list', true);
+    
     // Attach event listeners for dynamic inputs
     document.querySelectorAll('.btn-remove-exercise').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -652,6 +654,8 @@ function renderViewExercises(wk) {
         viewExercisesList.appendChild(exEl);
     });
     
+    initSortable('view-exercises-list', false);
+    
     // Checkbox event listeners
     document.querySelectorAll('.custom-checkbox').forEach(cb => {
         cb.addEventListener('click', (e) => {
@@ -683,6 +687,59 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     
     updateProgress(wk);
     renderHome(); // Update home screen stats silently
+}
+
+// --- Drag and Drop ---
+function initSortable(containerId, isEditMode) {
+    const el = document.getElementById(containerId);
+    if (!el || !window.Sortable) return;
+
+    // Destroy existing instance if any
+    const existing = Sortable.get(el);
+    if (existing) existing.destroy();
+
+    Sortable.create(el, {
+        animation: 200,
+        delay: 500,
+        delayOnTouchOnly: true,
+        touchStartThreshold: 5,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+        fallbackTolerance: 3,
+        onStart: () => {
+            if (navigator.vibrate) navigator.vibrate(50);
+        },
+        onEnd: async (evt) => {
+            const { oldIndex, newIndex } = evt;
+            if (oldIndex === newIndex) return;
+
+            let wk;
+            if (isEditMode) {
+                wk = currentWorkoutData;
+            } else {
+                wk = appData.workouts.find(w => w.id === viewingWorkoutId);
+            }
+
+            if (!wk) return;
+
+            // Move in array
+            const movedItem = wk.exercises.splice(oldIndex, 1)[0];
+            wk.exercises.splice(newIndex, 0, movedItem);
+
+            // Save to DB
+            await db.saveWorkout(wk);
+
+            // Re-render to update indexes and data-attributes
+            if (isEditMode) {
+                renderEditExercises();
+            } else {
+                renderViewExercises(wk);
+            }
+            
+            renderHome();
+        }
+    });
 }
 
 function updateProgress(wk) {
