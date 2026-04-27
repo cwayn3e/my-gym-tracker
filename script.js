@@ -480,9 +480,13 @@ function renderEditExercises() {
     currentWorkoutData.exercises.forEach((ex, index) => {
         const exEl = document.createElement('div');
         exEl.className = 'exercise-edit-card';
+        const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, currentWorkoutData.date);
+        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}×</div>` : '';
+        
         exEl.innerHTML = `
             <div class="exercise-edit-header">
                 <div class="exercise-number">${index + 1}</div>
+                ${plateauHtml}
                 <button class="icon-btn btn-remove-exercise" data-index="${index}">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                 </button>
@@ -636,7 +640,11 @@ function renderViewExercises(wk) {
             statsHtml += `<div class="stat-chip">${ex.weight} кг</div>`;
         }
         
+        const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date);
+        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}×</div>` : '';
+        
         exEl.innerHTML = `
+            ${plateauHtml}
             <div class="checkbox-wrapper">
                 <div class="custom-checkbox" data-id="${ex.id}" data-workout-id="${wk.id}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
@@ -687,6 +695,28 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     
     updateProgress(wk);
     renderHome(); // Update home screen stats silently
+}
+
+function getPlateauCount(exerciseName, weight, reps, currentWorkoutDate) {
+    if (!exerciseName || !weight || !reps) return 1;
+    
+    let count = 1;
+    const sortedWorkouts = [...appData.workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const olderWorkouts = sortedWorkouts.filter(w => w.date < currentWorkoutDate);
+
+    for (const wk of olderWorkouts) {
+        const matchingEx = wk.exercises.find(ex => ex.name.trim().toLowerCase() === exerciseName.trim().toLowerCase());
+        if (matchingEx) {
+            if (String(matchingEx.weight) === String(weight) && String(matchingEx.reps) === String(reps)) {
+                count++;
+            } else {
+                break;
+            }
+        } else {
+            continue; 
+        }
+    }
+    return count;
 }
 
 // --- Drag and Drop ---

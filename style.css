@@ -433,6 +433,26 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .toast { position: fixed; bottom: 3rem; left: 50%; transform: translateX(-50%) translateY(0); background: var(--text-main); color: var(--bg-color); padding: 0.875rem 1.5rem; border-radius: 100px; font-weight: 700; font-size: 0.875rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 10001; transition: all 0.4s cubic-bezier(0.25, 1, 0.2, 1); display: flex; align-items: center; gap: 0.5rem; }
 .toast.hidden { opacity: 0; transform: translateX(-50%) translateY(20px); pointer-events: none; }
 
+/* Plateau Indicator */
+.plateau-indicator {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  opacity: 0.45;
+  pointer-events: none;
+  background: var(--surface-color-light);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+.light-theme .plateau-indicator {
+  color: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.05);
+}
+
 /* Drag and Drop Styles */
 .sortable-chosen {
   opacity: 1 !important;
