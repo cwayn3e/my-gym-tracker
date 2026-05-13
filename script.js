@@ -23,7 +23,7 @@ let currentScreen = 'home';
 let editingWorkoutId = null;
 let currentWorkoutData = { id: null, date: '', name: '', exercises: [] };
 let viewingWorkoutId = null;
-let currentTheme = 'light';
+let currentTheme = 'cyber';
 let currentCalendarDate = new Date();
 
 // --- Elements ---
@@ -121,6 +121,11 @@ async function saveData() {
     // так как тренировки сохраняются индивидуально через db.saveWorkout
     await db.saveSetting('favorites', appData.favorites);
     updateDatalist();
+    
+    // Auto-sync to cloud if enabled
+    if (appData.username) {
+        syncToCloud(true);
+    }
 }
 
 function injectDatalist() {
@@ -186,7 +191,7 @@ function toggleGiantClock() {
 async function loadTheme() {
     let theme = await db.getSetting('theme');
     if (!theme) {
-        theme = localStorage.getItem('gymtracker_theme') || 'light';
+        theme = localStorage.getItem('gymtracker_theme') || 'cyber';
     }
     if (theme) {
         currentTheme = theme;
@@ -197,7 +202,7 @@ async function loadTheme() {
 }
 
 async function toggleTheme() {
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    currentTheme = currentTheme === 'minimal' ? 'cyber' : 'minimal';
     // Mirror to localStorage for instant anti-flash read on next cold start
     try { localStorage.setItem('gymtracker_theme', currentTheme); } catch(e) {}
     applyTheme();
@@ -205,18 +210,13 @@ async function toggleTheme() {
 }
 
 function applyTheme() {
-    const isLight = currentTheme === 'light';
-    const mascotPath = isLight ? 'icons/rabbit_girl_new.png' : 'icons/rabbit_dark_new.png';
-    const bgColor    = isLight ? '#f8f9fa' : '#0a1f33';
+    const isMinimal = currentTheme === 'minimal';
+    const mascotPath = 'icons/rabbit_girl_new.png';
+    const bgColor    = isMinimal ? '#ffffff' : '#0d0f14';
 
-    // Toggle CSS class
-    if (isLight) {
-        document.body.classList.add('light-theme');
-        document.body.classList.remove('theme-pink');
-    } else {
-        document.body.classList.remove('light-theme');
-        document.body.classList.remove('theme-pink');
-    }
+    // Toggle CSS classes on body
+    document.body.classList.remove('theme-minimal', 'theme-cyber');
+    document.body.classList.add(`theme-${currentTheme}`);
 
     // Update dynamic theme-color meta tag for browser chrome
     let metaTheme = document.querySelector('meta[name="theme-color"]');
@@ -731,7 +731,7 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     renderHome(); // Update home screen stats silently
     
     // Auto-sync to cloud if enabled
-    if (appData.syncCode) {
+    if (appData.username) {
         syncToCloud(true);
     }
     
@@ -942,6 +942,11 @@ async function deleteWorkout() {
     
     await db.deleteWorkout(viewingWorkoutId);
     appData.workouts = appData.workouts.filter(w => w.id !== viewingWorkoutId);
+    
+    // Auto-sync to cloud if enabled
+    if (appData.username) {
+        syncToCloud(true);
+    }
     
     renderHome();
     closeModal(modalConfirm);

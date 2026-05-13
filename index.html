@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <!-- HARD FIX: light bg applied before ANY CSS to eliminate dark flash -->
-  <meta name="theme-color" content="#f8f9fa" />
-  <style>html,body{background-color:#f8f9fa!important;}</style>
+  <meta name="theme-color" content="#ffffff" />
+  <style>html,body{background-color:transparent;}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -18,8 +18,8 @@
   <script>
     (function() {
       try {
-        var theme = localStorage.getItem('gymtracker_theme') || 'light';
-        var bg = theme === 'light' ? '#f8f9fa' : '#0a1f33';
+        var theme = localStorage.getItem('gymtracker_theme') || 'cyber';
+        var bg = (theme === 'minimal') ? '#ffffff' : '#0d0f14';
         document.documentElement.style.backgroundColor = bg;
         document.querySelector('meta[name="theme-color"]').content = bg;
       } catch(e) {}
@@ -27,17 +27,15 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="light-theme" style="background-color: #f8f9fa;">
+<body class="theme-cyber">
 
   <!-- ══ SPLASH SCREEN ══ -->
   <div id="splash" class="splash">
     <div class="splash-logo">
-      <div class="splash-icon">
-        <img src="icons/rabbit_girl_new.png" alt="GymTracker Logo" class="splash-img" id="splash-avatar">
-      </div>
+      <img src="icons/rabbit_girl_new.png" alt="GymTracker Logo" class="splash-img" id="splash-avatar">
       <div class="splash-title">GymTracker</div>
     </div>
   </div>
@@ -198,17 +196,17 @@
             <h3 class="settings-group-title">👤 Аккаунт</h3>
             <p class="settings-desc">Войдите, чтобы синхронизировать тренировки.</p>
             
-            <div id="account-status" class="sync-code-box hidden" style="margin-bottom: 1rem; border-style: solid;">
+            <div id="account-status" class="sync-code-box hidden">
                 <span class="sync-code-label">Вы вошли как</span>
-                <span id="active-username" class="sync-code-value" style="font-size: 1.5rem;">—</span>
-                <button id="btn-logout" class="btn-link" style="color: var(--danger-color); font-size: 0.8rem; margin-top: 0.5rem; text-decoration: underline; background: none; border: none; cursor: pointer;">Выйти</button>
+                <span id="active-username" class="sync-code-value">—</span>
+                <button id="btn-logout" class="btn-logout">Выйти</button>
             </div>
 
-            <div id="login-form" class="sync-actions" style="margin-top: 0.5rem;">
-                <div class="form-group" style="margin-bottom: 0.75rem;">
-                    <input type="text" id="input-username" class="form-input" placeholder="Катюша или Валик" style="text-align: center; font-weight: bold;">
+            <div id="login-form" class="sync-actions">
+                <div class="form-group">
+                    <input type="text" id="input-username" class="form-input login-input" placeholder="Катюша или Валик">
                 </div>
-                <button id="btn-login" class="btn-primary btn-lg" style="width: 100%;">Войти</button>
+                <button id="btn-login" class="btn-primary btn-lg">Войти</button>
             </div>
         </div>
         </div>
@@ -300,6 +298,7 @@
         <img src="icons/rabbit_girl_new.png" alt="Rabbit Girl" class="ios-logo-img">
       </div>
       <div class="ios-congrat-text">Ты молодец, Катюшка! ✨</div>
+      <div class="ios-congrat-subtext">Тренировка завершена</div>
     </div>
   </div>
 
