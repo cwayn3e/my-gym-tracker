@@ -258,7 +258,32 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
 }
-.calendar-header { margin-bottom: 1rem; text-align: center; font-weight: 800; font-size: 1.125rem; color: var(--text-main); text-transform: capitalize; }
+.calendar-header { 
+  margin-bottom: 1.5rem; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 800; 
+  font-size: 1.125rem; 
+  color: var(--text-main); 
+  text-transform: capitalize; 
+}
+#calendar-month-year {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-cyber);
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+.calendar-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 0 5px var(--primary-color);
+}
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -291,17 +316,10 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
   font-weight: 800;
 }
 .calendar-day.has-workout {
-  background: var(--surface-color-light);
+  background: rgba(0, 207, 255, 0.05);
 }
-.calendar-day.has-workout::after {
-  content: '';
-  position: absolute;
-  bottom: 10%;
-  width: 6px;
-  height: 6px;
-  background-color: var(--primary-color);
-  border-radius: 50%;
-  box-shadow: var(--shadow-glow);
+.light-theme .calendar-day.has-workout {
+  background: rgba(232, 62, 140, 0.05);
 }
 
 /* Day Summary */

@@ -24,6 +24,7 @@ let editingWorkoutId = null;
 let currentWorkoutData = { id: null, date: '', name: '', exercises: [] };
 let viewingWorkoutId = null;
 let currentTheme = 'light';
+let currentCalendarDate = new Date();
 
 // --- Elements ---
 const screens = {
@@ -338,9 +339,8 @@ function renderCalendar() {
     const calendarGrid = document.getElementById('calendar-grid');
     const monthYearEl = document.getElementById('calendar-month-year');
     
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    const year = currentCalendarDate.getFullYear();
+    const month = currentCalendarDate.getMonth();
     
     const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
     monthYearEl.textContent = `${monthNames[month]} ${year}`;
@@ -371,6 +371,7 @@ function renderCalendar() {
     
     // Days of the month
     const workoutDays = new Set(appData.workouts.map(w => w.date));
+    const todayStr = getTodayDateStr();
     
     for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -380,9 +381,14 @@ function renderCalendar() {
         
         if (workoutDays.has(dateStr)) {
             dayCell.classList.add('has-workout');
+            
+            // Add a little dot for workout
+            const dot = document.createElement('div');
+            dot.className = 'calendar-dot';
+            dayCell.appendChild(dot);
         }
         
-        if (day === now.getDate()) {
+        if (dateStr === todayStr) {
             dayCell.classList.add('today');
         }
         
@@ -1160,10 +1166,21 @@ function setupEventListeners() {
     // Calendar Modal
     const modalCalendar = document.getElementById('modal-calendar');
     document.getElementById('btn-history').addEventListener('click', () => {
-        renderCalendar(); // Render fresh data before opening
+        currentCalendarDate = new Date(); // Reset to today when opening
+        renderCalendar();
         openModal(modalCalendar);
     });
     document.getElementById('btn-close-calendar').addEventListener('click', () => closeModal(modalCalendar));
+
+    document.getElementById('btn-prev-month').addEventListener('click', () => {
+        currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+        renderCalendar();
+    });
+
+    document.getElementById('btn-next-month').addEventListener('click', () => {
+        currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+        renderCalendar();
+    });
 
     // Giant Clock
     document.getElementById('live-clock').addEventListener('click', toggleGiantClock);
