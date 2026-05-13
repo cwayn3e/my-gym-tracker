@@ -810,3 +810,24 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
   background: rgba(232, 62, 140, 0.05);
 }
 
+/* Mobile Optimizations for Settings */
+@media (max-width: 480px) {
+  .modal-sheet {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+  
+  .settings-section {
+    gap: 1rem;
+  }
+  
+  .form-input {
+    height: 3.5rem;
+    font-size: 1rem;
+  }
+  
+  .btn-lg {
+    height: 3.5rem;
+    font-size: 1rem;
+  }
+}
+
