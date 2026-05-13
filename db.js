@@ -111,6 +111,58 @@ export const db = {
     },
 
     /**
+     * Экспортировать все данные (тренировки и настройки)
+     */
+    async exportAllData() {
+        const workouts = await this.getAllWorkouts();
+        const settings = {};
+        
+        const database = await dbPromise;
+        const transaction = database.transaction('settings', 'readonly');
+        const store = transaction.objectStore('settings');
+        const request = store.getAll();
+        
+        return new Promise((resolve, reject) => {
+            request.onsuccess = () => {
+                request.result.forEach(s => settings[s.key] = s.value);
+                resolve({ workouts, settings });
+            };
+            request.onerror = () => reject(request.error);
+        });
+    },
+
+    /**
+     * Импортировать все данные (заменяет текущие)
+     */
+    async importAllData(data) {
+        if (!data || !data.workouts || !data.settings) {
+            throw new Error('Invalid data format for import');
+        }
+
+        const database = await dbPromise;
+        
+        // Очищаем и заполняем тренировки
+        const txW = database.transaction('workouts', 'readwrite');
+        const storeW = txW.objectStore('workouts');
+        storeW.clear();
+        for (const w of data.workouts) {
+            storeW.put(w);
+        }
+
+        // Очищаем и заполняем настройки
+        const txS = database.transaction('settings', 'readwrite');
+        const storeS = txS.objectStore('settings');
+        storeS.clear();
+        for (const [key, value] of Object.entries(data.settings)) {
+            storeS.put({ key, value });
+        }
+
+        return new Promise((resolve) => {
+            txS.oncomplete = () => resolve();
+        });
+    },
+
+    /**
      * Миграция данных из localStorage в IndexedDB
      */
     async migrateFromLocalStorage() {

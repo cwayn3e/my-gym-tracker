@@ -188,9 +188,29 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="settings-theme-section">
-          <p class="settings-label">CURRENT THEME</p>
+        <div class="settings-section">
+          <p class="settings-label">ОФОРМЛЕНИЕ</p>
           <button class="btn-primary btn-lg" id="btn-save-settings">Переключить тему</button>
+        </div>
+
+        <div class="settings-divider"></div>
+        <div class="settings-section">
+            <h3 class="settings-group-title">👤 Аккаунт</h3>
+            <p class="settings-desc">Войдите, чтобы синхронизировать тренировки.</p>
+            
+            <div id="account-status" class="sync-code-box hidden" style="margin-bottom: 1rem; border-style: solid;">
+                <span class="sync-code-label">Вы вошли как</span>
+                <span id="active-username" class="sync-code-value" style="font-size: 1.5rem;">—</span>
+                <button id="btn-logout" class="btn-link" style="color: var(--danger-color); font-size: 0.8rem; margin-top: 0.5rem; text-decoration: underline; background: none; border: none; cursor: pointer;">Выйти</button>
+            </div>
+
+            <div id="login-form" class="sync-actions">
+                <div class="sync-input-group">
+                    <input type="text" id="input-username" class="form-input" placeholder="Катюша или Валик">
+                    <button id="btn-login" class="btn-sync-load">Войти</button>
+                </div>
+            </div>
+        </div>
         </div>
       </div>
     </div>

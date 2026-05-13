@@ -103,10 +103,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadData() {
     try {
         appData.workouts = await db.getAllWorkouts();
+        
+        // Load settings
         const favorites = await db.getSetting('favorites');
-        if (favorites && favorites.length > 0) {
-            appData.favorites = favorites;
-        }
+        if (favorites && favorites.length > 0) appData.favorites = favorites;
+        
+        const username = await db.getSetting('username');
+        appData.username = username || null;
     } catch (e) {
         console.error("Error loading data from IndexedDB", e);
     }
@@ -608,6 +611,12 @@ async function saveWorkout() {
     
     // Check for iOS congratulation
     const showedCongrat = checkAndShowiOSCongratulation(currentWorkoutData);
+    
+    // Auto-sync to cloud if enabled
+    if (appData.username) {
+        syncToCloud(true);
+    }
+
     if (showedCongrat) return;
 
     if (editingWorkoutId) {
@@ -714,6 +723,11 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     
     updateProgress(wk);
     renderHome(); // Update home screen stats silently
+    
+    // Auto-sync to cloud if enabled
+    if (appData.syncCode) {
+        syncToCloud(true);
+    }
     
     // Check for iOS congratulation when checking off the last item
     checkAndShowiOSCongratulation(wk);
@@ -987,6 +1001,119 @@ function closeModal(modal) {
     modal.classList.add('hidden');
 }
 
+// --- Supabase Cloud Sync ---
+const SUPABASE_URL = 'https://ccekjgkopqkshxhdjezd.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_e1w5LQ8Jnjj2NGSuPrXZzA_ietBW25E';
+
+async function syncToCloud(silent = false) {
+    if (!appData.username && silent) return;
+    
+    const btn = document.getElementById('btn-login');
+    
+    try {
+        const data = await db.exportAllData();
+        const username = appData.username;
+        if (!username) return;
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_sync`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Prefer': 'resolution=merge-duplicates'
+            },
+            body: JSON.stringify({
+                sync_code: username,
+                data: data
+            })
+        });
+
+        if (!response.ok) throw new Error('Cloud save failed');
+
+        if (!silent) showToast('Данные в облаке!');
+    } catch (e) {
+        console.error(e);
+        if (!silent) showToast('Ошибка сохранения в облако');
+    }
+}
+
+async function loginAccount() {
+    const input = document.getElementById('input-username');
+    const btn = document.getElementById('btn-login');
+    const name = input.value.trim();
+    
+    if (!name) {
+        showToast('Введите имя (Катюша или Валик)');
+        return;
+    }
+    
+    try {
+        btn.disabled = true;
+        btn.textContent = 'Вход...';
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_sync?sync_code=eq.${name}&select=data`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+
+        const result = await response.json();
+        
+        // If account exists, ask to import
+        if (result && result.length > 0) {
+            if (confirm(`Найдена резервная копия для "${name}". Загрузить её и заменить текущие данные?`)) {
+                await db.importAllData(result[0].data);
+                appData.username = name;
+                await db.saveSetting('username', name);
+                showToast('Данные загружены! Перезагрузка...');
+                setTimeout(() => window.location.reload(), 1500);
+                return;
+            }
+        }
+        
+        // If not found or user cancelled import, just link the account
+        appData.username = name;
+        await db.saveSetting('username', name);
+        await syncToCloud(); // Save current local data to cloud for this user
+        
+        updateSettingsUI();
+        showToast(`Вы вошли как ${name}`);
+    } catch (e) {
+        console.error(e);
+        showToast('Ошибка при входе');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Войти';
+    }
+}
+
+async function logoutAccount() {
+    if (confirm('Выйти из аккаунта? Авто-сохранение в облако прекратится.')) {
+        appData.username = null;
+        await db.saveSetting('username', null);
+        updateSettingsUI();
+        showToast('Вы вышли из аккаунта');
+    }
+}
+
+function updateSettingsUI() {
+    const statusBox = document.getElementById('account-status');
+    const loginForm = document.getElementById('login-form');
+    const nameEl = document.getElementById('active-username');
+    
+    if (appData.username) {
+        statusBox.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+        nameEl.textContent = appData.username;
+    } else {
+        statusBox.classList.add('hidden');
+        loginForm.classList.remove('hidden');
+    }
+}
+
+
 // --- Events Setup ---
 function setupEventListeners() {
     // Buttons
@@ -1018,6 +1145,7 @@ function setupEventListeners() {
     
     // Settings
     document.getElementById('btn-settings').addEventListener('click', () => {
+        updateSettingsUI();
         openModal(modalSettings);
     });
     document.getElementById('btn-close-settings').addEventListener('click', () => closeModal(modalSettings));
@@ -1044,6 +1172,10 @@ function setupEventListeners() {
     document.getElementById('new-favorite-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') addFavorite();
     });
+
+    // Sync Buttons
+    document.getElementById('btn-login').addEventListener('click', loginAccount);
+    document.getElementById('btn-logout').addEventListener('click', logoutAccount);
     
     // Close modals on outside click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
@@ -1055,13 +1187,16 @@ function setupEventListeners() {
     // Swipe gestures on modal sheets (simple implementation)
     let touchStartY = 0;
     const modalSheet = document.querySelector('.modal-sheet');
-    modalSheet.addEventListener('touchstart', e => {
-        touchStartY = e.changedTouches[0].screenY;
-    });
-    modalSheet.addEventListener('touchend', e => {
-        const touchEndY = e.changedTouches[0].screenY;
-        if (touchEndY - touchStartY > 100) {
-            closeModal(modalFavorites);
-        }
-    });
+    if (modalSheet) {
+        modalSheet.addEventListener('touchstart', e => {
+            touchStartY = e.changedTouches[0].screenY;
+        });
+        modalSheet.addEventListener('touchend', e => {
+            const touchEndY = e.changedTouches[0].screenY;
+            if (touchEndY - touchStartY > 100) {
+                // Determine which modal is active and close it
+                document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(modal => closeModal(modal));
+            }
+        });
+    }
 }
