@@ -1,20 +1,20 @@
-﻿import { db } from './db.js';
+import { db } from './db.js';
 
 // --- Data Management ---
 const STORAGE_KEY = 'gymtracker_data';
 let appData = {
     workouts: [],
     favorites: [
-        "¦Ц¦¬¦- ¦¬¦¦¦¦¦-",
-        "¦ЯTА¦¬TБ¦¦¦+¦-¦-¦¬TП TБ¦- TИTВ¦-¦-¦¦¦-¦¦",
-        "¦бTВ¦-¦-¦-¦-¦-TП TВTП¦¦¦-",
-        "¦Я¦-¦+TВTП¦¦¦¬¦-¦-¦-¦¬TП",
-        "¦ЮTВ¦¦¦¬¦-¦-¦-¦¬TП ¦-¦- ¦-TАTГTБTМTПTЕ",
-        "¦У¦¬¦¬¦¦TАTН¦¦TБTВ¦¦¦-¦¬¦¬TП",
-        "¦вTП¦¦¦- ¦-¦¦TАTЕ¦-¦¦¦¦¦- ¦-¦¬¦-¦¦¦-",
-        "¦вTП¦¦¦- TИTВ¦-¦-¦¦¦¬ ¦- ¦-¦-¦¦¦¬¦-¦-¦¦",
-        "¦Ц¦¬¦- ¦¦¦-¦-TВ¦¦¦¬¦¦¦¦ TБ¦¬¦+TП",
-        "¦Я¦-¦+TК¦¦¦- ¦-¦- ¦-¦¬TЖ¦¦¦¬TБ"
+        "Жим лежа",
+        "Приседания со штангой",
+        "Становая тяга",
+        "Подтягивания",
+        "Отжимания на брусьях",
+        "Гиперэкстензия",
+        "Тяга верхнего блока",
+        "Тяга штанги в наклоне",
+        "Жим гантелей сидя",
+        "Подъем на бицепс"
     ]
 };
 
@@ -56,6 +56,53 @@ const viewDate = document.getElementById('view-date');
 const viewExercisesList = document.getElementById('view-exercises-list');
 const progressFill = document.getElementById('progress-fill');
 const progressText = document.getElementById('progress-text');
+
+const LEGACY_TEXT_MAP = new Map([
+    ['¦Ц¦¬¦- ¦¬¦¦¦¦¦-', 'Жим лежа'],
+    ['¦ЯTА¦¬TБ¦¦¦+¦-¦-¦¬TП TБ¦- TИTВ¦-¦-¦¦¦-¦¦', 'Приседания со штангой'],
+    ['¦бTВ¦-¦-¦-¦-¦-TП TВTП¦¦¦-', 'Становая тяга'],
+    ['¦Я¦-¦+TВTП¦¦¦¬¦-¦-¦-¦¬TП', 'Подтягивания'],
+    ['¦ЮTВ¦¦¦¬¦-¦-¦-¦¬TП ¦-¦- ¦-TАTГTБTМTПTЕ', 'Отжимания на брусьях'],
+    ['¦У¦¬¦¬¦¦TАTН¦¦TБTВ¦¦¦-¦¬¦¬TП', 'Гиперэкстензия'],
+    ['¦вTП¦¦¦- ¦-¦¦TАTЕ¦-¦¦¦¦¦- ¦-¦¬¦-¦¦¦-', 'Тяга верхнего блока'],
+    ['¦вTП¦¦¦- TИTВ¦-¦-¦¦¦¬ ¦- ¦-¦-¦¦¦¬¦-¦-¦¦', 'Тяга штанги в наклоне'],
+    ['¦Ц¦¬¦- ¦¦¦-¦-TВ¦¦¦¬¦¦¦¦ TБ¦¬¦+TП', 'Жим гантелей сидя'],
+    ['¦Я¦-¦+TК¦¦¦- ¦-¦- ¦-¦¬TЖ¦¦¦¬TБ', 'Подъем на бицепс'],
+    ['¦Ъ¦-TВTОTИ¦-', 'Катюша'],
+    ['¦Т¦-¦¬¦¬¦¦', 'Валик'],
+    ['¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦-', 'Тренировка'],
+    ['¦С¦¦¦¬ ¦-¦-¦¬¦-¦-¦-¦¬TП', 'Без названия'],
+    ['¦г¦¬TА¦-¦¦¦-¦¦¦-¦¬¦¦', 'Упражнений'],
+    ['¦Я¦-¦+TЕ¦-¦+TЛ', 'Подходы'],
+    ['¦Я¦-¦-TВ¦-TА¦¦¦-¦¬TП', 'Повторения'],
+    ['¦Т¦¦TБ (¦¦¦¦)', 'Вес (кг)'],
+    ['¦Ъ¦-¦-¦-¦¦¦-TВ¦-TА¦¬¦¦ (¦-¦¬TЖ¦¬¦-¦-¦-¦¬TМ¦-¦-)', 'Комментарий (необязательно)'],
+    ['¦ТTЛ¦¬¦-¦¬¦-¦¦¦-¦-', 'Выполнено'],
+    ['¦ЯTА¦-¦¦TА¦¦TБTБ', 'Прогресс'],
+    ['¦Т TНTВ¦-TВ ¦+¦¦¦-TМ тренировок ¦-¦¦ ¦-TЛ¦¬¦-.', 'В этот день тренировок не было.']
+]);
+
+function repairLegacyText(value) {
+    return LEGACY_TEXT_MAP.get(value) || value;
+}
+
+function repairWorkoutData(workout) {
+    if (!workout || typeof workout !== 'object') return workout;
+
+    const repaired = {
+        ...workout,
+        name: repairLegacyText(workout.name),
+        exercises: Array.isArray(workout.exercises)
+            ? workout.exercises.map(ex => ({
+                ...ex,
+                name: repairLegacyText(ex.name),
+                comment: repairLegacyText(ex.comment)
+            }))
+            : []
+    };
+
+    return repaired;
+}
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -112,14 +159,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadData() {
     try {
-        appData.workouts = await db.getAllWorkouts();
+        const workouts = await db.getAllWorkouts();
+        const repairedWorkouts = workouts.map(repairWorkoutData);
+        appData.workouts = repairedWorkouts;
         
         // Load settings
         const favorites = await db.getSetting('favorites');
-        if (favorites && favorites.length > 0) appData.favorites = favorites;
+        const repairedFavorites = favorites && favorites.length > 0 ? favorites.map(repairLegacyText) : null;
+        if (repairedFavorites) appData.favorites = repairedFavorites;
         
         const username = await db.getSetting('username');
-        appData.username = username || null;
+        appData.username = repairLegacyText(username) || null;
+
+        if (JSON.stringify(repairedWorkouts) !== JSON.stringify(workouts)) {
+            for (const workout of appData.workouts) {
+                await db.saveWorkout(workout);
+            }
+        }
+
+        if (repairedFavorites && JSON.stringify(repairedFavorites) !== JSON.stringify(favorites)) {
+            await db.saveSetting('favorites', appData.favorites);
+        }
+
+        if (username && appData.username !== username) {
+            await db.saveSetting('username', appData.username);
+        }
     } catch (e) {
         console.error("Error loading data from IndexedDB", e);
     }
@@ -294,7 +358,7 @@ function renderHome() {
             const count = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date, wk.id);
             return count >= 2 ? acc + 1 : acc;
         }, 0);
-        const plateauSummaryHtml = plateauCountTotal > 0 ? `<div class="plateau-indicator" title="¦г¦¬TА¦-¦¦¦-¦¦¦-¦¬¦¦ ¦-¦- ¦¬¦¬¦-TВ¦-">${plateauCountTotal}+Ч</div>` : '';
+        const plateauSummaryHtml = plateauCountTotal > 0 ? `<div class="plateau-indicator" title="Упражнений на плато">${plateauCountTotal}×</div>` : '';
 
         let cardClass = 'workout-card';
         if (isCompleted) cardClass += ' is-completed';
@@ -307,24 +371,24 @@ function renderHome() {
                     ${formatDateDisplay(wk.date)}
                 </div>
                 ${plateauSummaryHtml}
-                <button class="icon-btn-small btn-duplicate" data-id="${wk.id}" title="¦Я¦-¦-TВ¦-TА¦¬TВTМ TВTА¦¦¦-¦¬TА¦-¦-¦¦TГ">
+                <button class="icon-btn-small btn-duplicate" data-id="${wk.id}" title="Повторить тренировку">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 </button>
             </div>
-            <h3 class="workout-card-title">${wk.name || '¦С¦¦¦¬ ¦-¦-¦¬¦-¦-¦-¦¬TП'}</h3>
+            <h3 class="workout-card-title">${wk.name || 'Без названия'}</h3>
             <div class="workout-card-stats">
                 <div class="stat-badge">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    ¦г¦¬TА¦-¦¦¦-¦¦¦-¦¬¦¦: ${totalEx}
+                    Упражнений: ${totalEx}
                 </div>
                 ${completedEx === totalEx && totalEx > 0 ? 
                     `<div class="stat-badge" style="color: var(--success-color); border-color: rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.1);">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                        ¦ТTЛ¦¬¦-¦¬¦-¦¦¦-¦-
+                        Выполнено
                     </div>` : 
                     `<div class="stat-badge">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                        ¦ЯTА¦-¦¦TА¦¦TБTБ: ${completedEx}/${totalEx}
+                        Прогресс: ${completedEx}/${totalEx}
                     </div>`
                 }
             </div>
@@ -351,7 +415,7 @@ function renderCalendar() {
     const year = currentCalendarDate.getFullYear();
     const month = currentCalendarDate.getMonth();
     
-    const monthNames = ["¦п¦-¦-¦-TАTМ", "¦д¦¦¦-TА¦-¦¬TМ", "¦Ь¦-TАTВ", "¦Р¦¬TА¦¦¦¬TМ", "¦Ь¦-¦¦", "¦ШTО¦-TМ", "¦ШTО¦¬TМ", "¦Р¦-¦¦TГTБTВ", "¦б¦¦¦-TВTП¦-TАTМ", "¦Ю¦¦TВTП¦-TАTМ", "¦Э¦-TП¦-TАTМ", "¦Ф¦¦¦¦¦-¦-TАTМ"];
+    const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
     monthYearEl.textContent = `${monthNames[month]} ${year}`;
     
     const firstDay = new Date(year, month, 1).getDay();
@@ -363,7 +427,7 @@ function renderCalendar() {
     calendarGrid.innerHTML = '';
     
     // Day labels
-    const weekDays = ['¦Я¦-', '¦ТTВ', '¦бTА', '¦зTВ', '¦ЯTВ', '¦б¦-', '¦ТTБ'];
+    const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
     weekDays.forEach(day => {
         const dayLabel = document.createElement('div');
         dayLabel.className = 'calendar-day-label';
@@ -417,18 +481,18 @@ function showDaySummary(dateStr) {
     summaryContent.innerHTML = '';
     
     if (workouts.length === 0) {
-        summaryContent.innerHTML = '<p class="no-workouts">¦Т TНTВ¦-TВ ¦+¦¦¦-TМ TВTА¦¦¦-¦¬TА¦-¦-¦-¦¦ ¦-¦¦ ¦-TЛ¦¬¦-.</p>';
+        summaryContent.innerHTML = '<p class="no-workouts">В этот день тренировок не было.</p>';
     } else {
         workouts.forEach(wk => {
             const wkEl = document.createElement('div');
             wkEl.className = 'summary-workout-item';
             
-            const exercisesStr = wk.exercises.map(ex => ex.name).join(', ') || '¦С¦¦¦¬ TГ¦¬TА¦-¦¦¦-¦¦¦-¦¬¦¦';
+            const exercisesStr = wk.exercises.map(ex => ex.name).join(', ') || 'Без упражнений';
             
             wkEl.innerHTML = `
-                <strong>${wk.name || '¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦-'}</strong>
+                <strong>${wk.name || 'Тренировка'}</strong>
                 <p>${exercisesStr}</p>
-                <button class="btn-link btn-open-wk" data-id="${wk.id}">¦ЮTВ¦¦TАTЛTВTМ</button>
+                <button class="btn-link btn-open-wk" data-id="${wk.id}">Открыть</button>
             `;
             wkEl.querySelector('.btn-open-wk').addEventListener('click', (e) => {
                 openWorkoutView(e.currentTarget.getAttribute('data-id'));
@@ -450,7 +514,7 @@ function openNewWorkout() {
         exercises: []
     };
     
-    document.getElementById('workout-screen-title').textContent = '¦Э¦-¦-¦-TП TВTА¦¦¦-¦¬TА¦-¦-¦¦¦-';
+    document.getElementById('workout-screen-title').textContent = 'Новая тренировка';
     initEditScreen();
     navigateTo('workout');
 }
@@ -475,10 +539,10 @@ function duplicateWorkout(id) {
         }))
     };
     
-    document.getElementById('workout-screen-title').textContent = '¦Э¦-¦-¦-TП TВTА¦¦¦-¦¬TА¦-¦-¦¦¦-';
+    document.getElementById('workout-screen-title').textContent = 'Новая тренировка';
     initEditScreen();
     navigateTo('workout');
-    showToast('¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦- TБ¦¦¦-¦¬¦¬TА¦-¦-¦-¦-¦-');
+    showToast('Тренировка скопирована');
 }
 
 function openEditWorkout(id) {
@@ -489,7 +553,7 @@ function openEditWorkout(id) {
     // Deep copy
     currentWorkoutData = JSON.parse(JSON.stringify(wk));
     
-    document.getElementById('workout-screen-title').textContent = '¦а¦¦¦+¦-¦¦TВ¦¬TА¦-¦-¦-¦-¦¬¦¦';
+    document.getElementById('workout-screen-title').textContent = 'Редактирование';
     initEditScreen();
     navigateTo('workout');
 }
@@ -508,7 +572,7 @@ function renderEditExercises() {
         const exEl = document.createElement('div');
         exEl.className = 'exercise-edit-card';
         const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, currentWorkoutData.date, currentWorkoutData.id);
-        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}+Ч</div>` : '';
+        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}×</div>` : '';
         
         exEl.innerHTML = `
             <div class="exercise-edit-header">
@@ -520,27 +584,27 @@ function renderEditExercises() {
             </div>
             
             <div class="form-group exercise-name-input">
-                <label class="form-label">¦г¦¬TА¦-¦¦¦-¦¦¦-¦¬¦¦</label>
-                <input type="text" class="form-input ex-name" placeholder="¦Э¦-¦¬¦-¦-¦-¦¬¦¦ (¦-¦-¦¬TА. ¦Ц¦¬¦- ¦¬¦¦¦¦¦-)" value="${ex.name || ''}" list="favorites-datalist" data-index="${index}">
+                <label class="form-label">Упражнение</label>
+                <input type="text" class="form-input ex-name" placeholder="Название (напр. Жим лежа)" value="${ex.name || ''}" list="favorites-datalist" data-index="${index}">
             </div>
             
             <div class="set-rep-row">
                 <div class="form-group">
-                    <label class="form-label">¦Я¦-¦+TЕ¦-¦+TЛ</label>
+                    <label class="form-label">Подходы</label>
                     <input type="number" class="form-input ex-sets" placeholder="3" value="${ex.sets || ''}" min="1" data-index="${index}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">¦Я¦-¦-TВ¦-TА¦¦¦-¦¬TП</label>
+                    <label class="form-label">Повторения</label>
                     <input type="number" class="form-input ex-reps" placeholder="10" value="${ex.reps || ''}" min="1" data-index="${index}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">¦Т¦¦TБ (¦¦¦¦)</label>
+                    <label class="form-label">Вес (кг)</label>
                     <input type="number" class="form-input ex-weight" placeholder="50" value="${ex.weight || ''}" step="0.5" data-index="${index}">
                 </div>
             </div>
             
             <div class="form-group">
-                <input type="text" class="form-input ex-comment" placeholder="¦Ъ¦-¦-¦-¦¦¦-TВ¦-TА¦¬¦¦ (¦-¦¬TЖ¦¬¦-¦-¦-¦¬TМ¦-¦-)" value="${ex.comment || ''}" data-index="${index}">
+                <input type="text" class="form-input ex-comment" placeholder="Комментарий (необязательно)" value="${ex.comment || ''}" data-index="${index}">
             </div>
         `;
         
@@ -601,9 +665,9 @@ async function saveWorkout() {
     
     if (!currentWorkoutData.name) {
         // Auto-generate name if empty
-        const days = ['¦ТTБ', '¦Я¦-', '¦ТTВ', '¦бTА', '¦зTВ', '¦ЯTВ', '¦б¦-'];
+        const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
         const dayName = days[new Date(currentWorkoutData.date).getDay()];
-        currentWorkoutData.name = `¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦- (${dayName})`;
+        currentWorkoutData.name = `Тренировка (${dayName})`;
     }
     
     // Clean up empty exercises
@@ -622,7 +686,7 @@ async function saveWorkout() {
             await db.saveWorkout(currentWorkoutData);
             updateDatalist();
             renderHome();
-            showToast('¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦- TБ¦-TЕTА¦-¦-¦¦¦-¦-');
+            showToast('Тренировка завершена и сохранена! ✅');
 
             if (appData.username) {
                 await syncToCloud(true);
@@ -634,8 +698,8 @@ async function saveWorkout() {
                 navigateTo('home');
             }
         } catch (e) {
-            console.error('¦ЮTИ¦¬¦-¦¦¦- TБ¦-TЕTА¦-¦-¦¦¦-¦¬TП (saveWorkout):', e);
-            showToast('¦ЮTИ¦¬¦-¦¦¦- TБ¦-TЕTА¦-¦-¦¦¦-¦¬TП');
+            console.error('Ошибка сохранения тренировки (saveWorkout):', e);
+            showToast('Ошибка сохранения тренировки');
         }
     }
 
@@ -646,7 +710,7 @@ function openWorkoutView(id) {
     
     viewingWorkoutId = id;
     
-    viewTitle.textContent = wk.name || '¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦-';
+    viewTitle.textContent = wk.name || 'Тренировка';
     viewDate.textContent = formatDateDisplay(wk.date);
     
     renderViewExercises(wk);
@@ -662,7 +726,7 @@ function renderViewExercises(wk) {
     if (wk.exercises.length === 0) {
         viewExercisesList.innerHTML = `
             <div class="empty-state" style="height: auto; padding: 2rem;">
-                <p class="empty-desc">¦Т TНTВ¦-¦¦ TВTА¦¦¦-¦¬TА¦-¦-¦¦¦¦ ¦-¦¦TВ TГ¦¬TА¦-¦¦¦-¦¦¦-¦¬¦¦.</p>
+                <p class="empty-desc">В этой тренировке пока нет упражнений.</p>
             </div>
         `;
         return;
@@ -674,15 +738,15 @@ function renderViewExercises(wk) {
         
         let statsHtml = '';
         if (ex.sets || ex.reps) {
-            const setsReps = `${ex.sets ? ex.sets : '?'} <span class="accent-text">+Ч</span> ${ex.reps ? ex.reps : '?'}`;
+            const setsReps = `${ex.sets ? ex.sets : '?'} <span class="accent-text">×</span> ${ex.reps ? ex.reps : '?'}`;
             statsHtml += `<div class="stat-chip">${setsReps}</div>`;
         }
         if (ex.weight) {
-            statsHtml += `<div class="stat-chip">${ex.weight} ¦¦¦¦</div>`;
+            statsHtml += `<div class="stat-chip">${ex.weight} кг</div>`;
         }
         
         const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date, wk.id);
-        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}+Ч</div>` : '';
+        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}×</div>` : '';
         
         exEl.innerHTML = `
             ${plateauHtml}
@@ -764,40 +828,39 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     updateProgress(wk);
     renderHome();
 
-    // ¦ХTБ¦¬¦¬ TВTА¦¦¦-¦¬TА¦-¦-¦¦¦- ¦¬¦-¦-¦¦TАTИ¦¦¦-¦- тАФ TБ¦-TЕTА¦-¦-TП¦¦¦- ¦¬ ¦¬¦-¦¦¦-¦¬TЛ¦-¦-¦¦¦- ¦¬¦-¦¬¦+TА¦-¦-¦¬¦¦¦-¦¬¦¦
+    // If the workout is completed, save and notify the user
     const total = wk.exercises.length;
     const done = wk.exercises.filter(e => e.done).length;
     const isCompleted = total > 0 && done === total;
 
     if (isCompleted) {
-        // ¦У¦-TА¦-¦-TВ¦¬TА¦-¦-¦-¦-¦-¦-¦¦ TБ¦-TЕTА¦-¦-¦¦¦-¦¬¦¦ ¦- ¦С¦Ф
+        // Ensure the workout is saved
         await db.saveWorkout(wk);
 
-        // ¦б¦-TЕTА¦-¦-TП¦¦¦- ¦- ¦¬TА¦-TД¦¬¦¬TМ Supabase ¦+¦¬TП ¦-¦¦¦-¦-¦-¦¦¦-¦-¦-¦¦¦- ¦-¦-¦-¦-¦-¦¬¦¦¦-¦¬TП ¦-¦- ¦+TАTГ¦¦¦¬TЕ TГTБTВTА¦-¦¦TБTВ¦-¦-TЕ
+        // Sync completed workout to Supabase profile
         if (appData.username) {
             await syncCompletedWorkoutToProfile(wk);
         }
 
-        // ¦в¦-¦¬TМ¦¦¦- ¦+¦¬TП iPhone ¦¬ TВ¦-¦¬TМ¦¦¦- ¦+¦¬TП ¦¬TА¦-TД¦¬¦¬TП ¦Ъ¦-TВTОTИ¦- (¦Т¦-¦¬¦¬¦¦TГ ¦-¦¦ ¦¬¦-¦¦¦-¦¬TЛ¦-¦-¦¦¦-)
+        // iPhone congratulations only for Katyusha
         const isIPhone = navigator.userAgent.includes('iPhone');
-        const isKatusha = appData.username === '¦Ъ¦-TВTОTИ¦-';
-        const isValik = appData.username === '¦Т¦-¦¬¦¬¦¦';
+        const isKatusha = appData.username === 'Катюша';
+        const isValik = appData.username === 'Валик';
         if (isIPhone && isKatusha) {
             await showiOSCongratulation(wk);
         } else if (!isValik) {
-            showToast('Тренировка завершена и сохранена! ?');
+            showToast('Тренировка завершена и сохранена! ✅');
             navigateTo('home');
         } else {
-            showToast('¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦- ¦¬¦-¦-¦¦TАTИ¦¦¦-¦-! тЬи');
-            showToast('Тренировка завершена и сохранена! ?');
+            showToast('Тренировка завершена и сохранена! ✅');
         }
 
-        // ¦Р¦-TВ¦-TБ¦¬¦-TЕTА¦-¦-¦¬¦¬¦-TЖ¦¬TП
+        // Auto-sync
         if (appData.username) {
             syncToCloud(true);
         }
     } else {
-        // ¦ЯTА¦-¦-¦¦¦¦TГTВ¦-TЗ¦-TЛ¦¦ ¦¬¦¬¦-¦¦¦-¦¦¦-¦¬TП (¦¦TБ¦¬¦¬ TВTА¦¦¦-¦¬TА¦-¦-¦¦¦- ¦-¦¦ ¦¬¦-¦-¦¦TАTИ¦¦¦-¦-) тАФ TБ¦-TЕTА¦-¦-TП¦¦¦-
+        // Save intermediate changes
         await db.saveWorkout(wk);
         if (appData.username) {
             syncToCloud(true);
@@ -805,7 +868,7 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     }
 }
 
-// тФАтФА iOS ¦¬¦-¦¬¦+TА¦-¦-¦¬¦¦¦-¦¬¦¦ (TВ¦-¦¬TМ¦¦¦- ¦+¦¬TП ¦Ъ¦-TВTОTИ¦¬) тФАтФА
+// iOS congratulations for Katyusha
 async function showiOSCongratulation(wk) {
     spawnConfetti();
     const overlay = document.getElementById('ios-congratulations');
@@ -827,12 +890,12 @@ function updateCardPlateauBadge(cardEl, exercise) {
     
     if (count >= 2) {
         if (badge) {
-            badge.textContent = `${count}+Ч`;
+            badge.textContent = `${count}×`;
             badge.classList.remove('hidden');
         } else {
             const newBadge = document.createElement('div');
             newBadge.className = 'plateau-indicator';
-            newBadge.textContent = `${count}+Ч`;
+            newBadge.textContent = `${count}×`;
             const header = cardEl.querySelector('.exercise-edit-header');
             if (header) header.appendChild(newBadge);
         }
@@ -1033,7 +1096,7 @@ async function deleteWorkout() {
     
     renderHome();
     closeModal(modalConfirm);
-    showToast('¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦- TГ¦+¦-¦¬¦¦¦-¦-');
+    showToast('Тренировка удалена');
     navigateTo('home');
 }
 
@@ -1083,7 +1146,7 @@ async function loadSettings() {
 async function saveSettings() {
     await toggleTheme();
     closeModal(modalSettings);
-    showToast('¦в¦¦¦-¦- ¦¬¦¬¦-¦¦¦-¦¦¦-¦-');
+    showToast('Тема сохранена');
 }
 
 // --- Modals Utils ---
@@ -1125,10 +1188,10 @@ async function syncToCloud(silent = false) {
 
         if (!response.ok) throw new Error('Cloud save failed');
 
-        if (!silent) showToast('¦Ф¦-¦-¦-TЛ¦¦ ¦- ¦-¦-¦¬¦-¦¦¦¦!');
+        if (!silent) showToast('Данные синхронизированы');
     } catch (e) {
         console.error(e);
-        if (!silent) showToast('¦ЮTИ¦¬¦-¦¦¦- TБ¦-TЕTА¦-¦-¦¦¦-¦¬TП ¦- ¦-¦-¦¬¦-¦¦¦-');
+        if (!silent) showToast('Ошибка синхронизации');
     }
 }
 
@@ -1138,13 +1201,13 @@ async function loginAccount() {
     const name = input.value.trim();
     
     if (!name) {
-        showToast('¦Т¦-¦¦¦+¦¬TВ¦¦ ¦¬¦-TП (¦Ъ¦-TВTОTИ¦- ¦¬¦¬¦¬ ¦Т¦-¦¬¦¬¦¦)');
+        showToast('Введите имя (Катюша или Валик)');
         return;
     }
     
     try {
         btn.disabled = true;
-        btn.textContent = '¦ТTЕ¦-¦+...';
+        btn.textContent = 'Вход...';
         
         const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_sync?sync_code=eq.${name}&select=data`, {
             headers: {
@@ -1157,11 +1220,11 @@ async function loginAccount() {
         
         // If account exists, ask to import
         if (result && result.length > 0) {
-            if (confirm(`¦Э¦-¦¦¦+¦¦¦-¦- TА¦¦¦¬¦¦TА¦-¦-¦-TП ¦¦¦-¦¬¦¬TП ¦+¦¬TП "${name}". ¦Ч¦-¦¦TАTГ¦¬¦¬TВTМ ¦¦TС ¦¬ ¦¬¦-¦-¦¦¦-¦¬TВTМ TВ¦¦¦¦TГTЙ¦¬¦¦ ¦+¦-¦-¦-TЛ¦¦?`)) {
+            if (confirm(`Для профиля "${name}" найдены данные. Загрузить их вместо текущих?`)) {
                 await db.importAllData(result[0].data);
                 appData.username = name;
                 await db.saveSetting('username', name);
-                showToast('¦Ф¦-¦-¦-TЛ¦¦ ¦¬¦-¦¦TАTГ¦¦¦¦¦-TЛ! ¦Я¦¦TА¦¦¦¬¦-¦¦TАTГ¦¬¦¦¦-...');
+                showToast('Аккаунт найден. Данные загружены...');
                 setTimeout(() => window.location.reload(), 1500);
                 return;
             }
@@ -1173,22 +1236,22 @@ async function loginAccount() {
         await syncToCloud(); // Save current local data to cloud for this user
         
         updateSettingsUI();
-        showToast(`¦ТTЛ ¦-¦-TИ¦¬¦¬ ¦¦¦-¦¦ ${name}`);
+        showToast(`Вы вошли как ${name}`);
     } catch (e) {
         console.error(e);
-        showToast('¦ЮTИ¦¬¦-¦¦¦- ¦¬TА¦¬ ¦-TЕ¦-¦+¦¦');
+        showToast('Ошибка при входе');
     } finally {
         btn.disabled = false;
-        btn.textContent = '¦Т¦-¦¦TВ¦¬';
+        btn.textContent = 'Войти';
     }
 }
 
 async function logoutAccount() {
-    if (confirm('¦ТTЛ¦¦TВ¦¬ ¦¬¦¬ ¦-¦¦¦¦¦-TГ¦-TВ¦-? ¦Р¦-TВ¦--TБ¦-TЕTА¦-¦-¦¦¦-¦¬¦¦ ¦- ¦-¦-¦¬¦-¦¦¦- ¦¬TА¦¦¦¦TА¦-TВ¦¬TВTБTП.')) {
+    if (confirm('Выйти из аккаунта? Автосохранение в облако прекратится.')) {
         appData.username = null;
         await db.saveSetting('username', null);
         updateSettingsUI();
-        showToast('¦ТTЛ ¦-TЛTИ¦¬¦¬ ¦¬¦¬ ¦-¦¦¦¦¦-TГ¦-TВ¦-');
+        showToast('Вы вышли из аккаунта');
     }
 }
 
@@ -1231,7 +1294,7 @@ async function syncCompletedWorkoutToProfile(workout) {
 
         if (!response.ok) throw new Error('Profile save failed');
     } catch (e) {
-        console.error('¦ЮTИ¦¬¦-¦¦¦- TБ¦-TЕTА¦-¦-¦¦¦-¦¬TП ¦- ¦¬TА¦-TД¦¬¦¬TМ:', e);
+        console.error('Ошибка при синхронизации профиля:', e);
     }
 }
 
@@ -1249,10 +1312,10 @@ async function exportData() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToast('тЬЕ ¦Ф¦-¦-¦-TЛ¦¦ TН¦¦TБ¦¬¦-TАTВ¦¬TА¦-¦-¦-¦-TЛ');
+        showToast('✅ Данные экспортированы');
     } catch (e) {
-        console.error('¦ЮTИ¦¬¦-¦¦¦- TН¦¦TБ¦¬¦-TАTВ¦-:', e);
-        showToast('тЭМ ¦ЮTИ¦¬¦-¦¦¦- TН¦¦TБ¦¬¦-TАTВ¦-');
+        console.error('Ошибка экспорта:', e);
+        showToast('❌ Ошибка экспорта');
     }
 }
 
@@ -1265,12 +1328,12 @@ async function importData(event) {
         const data = JSON.parse(text);
         
         if (!data.workouts || !data.settings) {
-            showToast('тЭМ ¦Э¦¦¦-¦¦TА¦-TЛ¦¦ TД¦-TА¦-¦-TВ TД¦-¦¦¦¬¦-');
+            showToast('❌ Неверный формат файла');
             return;
         }
         
         // ¦Я¦-¦¦¦-¦¬TЛ¦-¦-¦¦¦- ¦¬¦-¦+TВ¦-¦¦TА¦¦¦+¦¦¦-¦¬¦¦
-        if (!confirm(`¦Ч¦-¦¦TАTГ¦¬¦¬TВTМ ${data.workouts.length} TВTА¦¦¦-¦¬TА¦-¦-¦-¦¦? ¦в¦¦¦¦TГTЙ¦¬¦¦ ¦+¦-¦-¦-TЛ¦¦ ¦-TГ¦+TГTВ ¦¬¦-¦-¦¦¦-¦¦¦-TЛ.`)) {
+        if (!confirm(`Загрузить ${data.workouts.length} тренировок? Текущие данные будут заменены.`)) {
             return;
         }
         
@@ -1279,13 +1342,13 @@ async function importData(event) {
         // ¦Я¦¦TА¦¦¦¬¦-¦¦TАTГ¦¦¦-¦¦¦- ¦+¦-¦-¦-TЛ¦¦
         await loadData();
         renderHome();
-        showToast(`тЬЕ ¦Ч¦-¦¦TАTГ¦¦¦¦¦-¦- ${data.workouts.length} TВTА¦¦¦-¦¬TА¦-¦-¦-¦¦`);
+        showToast(`✅ Загружено ${data.workouts.length} тренировок`);
         
         // ¦б¦-TА¦-TБ input, TЗTВ¦-¦-TЛ ¦-¦-¦¦¦-¦- ¦-TЛ¦¬¦- ¦-TЛ¦-TА¦-TВTМ TВ¦-TВ ¦¦¦¦ TД¦-¦¦¦¬ ¦¬¦-¦-TВ¦-TА¦-¦-
         event.target.value = '';
     } catch (e) {
-        console.error('¦ЮTИ¦¬¦-¦¦¦- ¦¬¦-¦¬¦-TАTВ¦-:', e);
-        showToast('тЭМ ¦ЮTИ¦¬¦-¦¦¦- ¦¬¦-¦¬¦-TАTВ¦-');
+        console.error('Ошибка импорта:', e);
+        showToast('❌ Ошибка импорта');
         event.target.value = '';
     }
 }
