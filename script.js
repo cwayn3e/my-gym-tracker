@@ -610,26 +610,20 @@ async function saveWorkout() {
     }
     
     await db.saveWorkout(currentWorkoutData);
-    updateDatalist(); // Still want to update datalist if new exercises were added
-    renderHome();
+        updateDatalist();
+        renderHome();
     
-    showToast('Тренировка сохранена');
-    
-    // Check for iOS congratulation
-    const showedCongrat = checkAndShowiOSCongratulation(currentWorkoutData);
-    
-    // Auto-sync to cloud if enabled
-    if (appData.username) {
-        syncToCloud(true);
-    }
+        showToast('Тренировка сохранена');
 
-    if (showedCongrat) return;
+        if (appData.username) {
+            syncToCloud(true);
+        }
 
-    if (editingWorkoutId) {
-        openWorkoutView(currentWorkoutData.id); // Go back to view
-    } else {
-        navigateTo('home');
-    }
+        if (editingWorkoutId) {
+            openWorkoutView(currentWorkoutData.id);
+        } else {
+            navigateTo('home');
+        }
 }
 
 // --- View Screen ---
@@ -709,16 +703,43 @@ function renderViewExercises(wk) {
     });
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     const wk = appData.workouts.find(w => w.id === wkId);
     if (!wk) return;
-    
+
     const ex = wk.exercises.find(e => e.id === exId);
     if (!ex) return;
-    
+
     ex.done = !ex.done;
-    await db.saveWorkout(wk);
-    
+
     // Update UI
     const cardEl = checkboxEl.closest('.exercise-view-card');
     if (ex.done) {
@@ -726,17 +747,56 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     } else {
         cardEl.classList.remove('done');
     }
-    
+
     updateProgress(wk);
-    renderHome(); // Update home screen stats silently
-    
-    // Auto-sync to cloud if enabled
-    if (appData.username) {
-        syncToCloud(true);
+    renderHome();
+
+    // Если тренировка завершена — сохраняем и показываем поздравление
+    const total = wk.exercises.length;
+    const done = wk.exercises.filter(e => e.done).length;
+    const isCompleted = total > 0 && done === total;
+
+    if (isCompleted) {
+        // Гарантированное сохранение в БД
+        await db.saveWorkout(wk);
+
+        // Только для iPhone и только для профиля Катюша
+        const isIPhone = navigator.userAgent.includes('iPhone');
+        const isKatusha = appData.username === 'Катюша';
+        if (isIPhone && isKatusha) {
+            await showiOSCongratulation(wk);
+        } else {
+            showToast('Тренировка завершена! ✨');
+            navigateTo('home');
+        }
+
+        // Автосинхронизация
+        if (appData.username) {
+            syncToCloud(true);
+        }
+    } else {
+        // Промежуточные изменения (если тренировка не завершена) — сохраняем
+        await db.saveWorkout(wk);
+        if (appData.username) {
+            syncToCloud(true);
+        }
     }
-    
-    // Check for iOS congratulation when checking off the last item
-    checkAndShowiOSCongratulation(wk);
+}
+
+// ── iOS поздравление (только для Катюши) ──
+async function showiOSCongratulation(wk) {
+    spawnConfetti();
+    const overlay = document.getElementById('ios-congratulations');
+    overlay.classList.remove('hidden');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        overlay.classList.add('active');
+    }));
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    overlay.classList.remove('active');
+    await new Promise(resolve => setTimeout(resolve, 600));
+    overlay.classList.add('hidden');
+    clearConfetti();
+    navigateTo('home');
 }
 
 function updateCardPlateauBadge(cardEl, exercise) {
@@ -836,39 +896,40 @@ function clearConfetti() {
     if (c) c.innerHTML = '';
 }
 
-// ── Main iOS congratulation logic ─────────────────────────────────────────
-function checkAndShowiOSCongratulation(wk) {
-    const isIPhone = navigator.userAgent.includes('iPhone');
-    if (!isIPhone) return false;
 
-    const total = wk.exercises.length;
-    const done  = wk.exercises.filter(e => e.done).length;
 
-    if (total > 0 && done === total) {
-        const overlay = document.getElementById('ios-congratulations');
-        if (overlay) {
-            spawnConfetti();
-            overlay.classList.remove('hidden');
 
-            // Double rAF ensures transition fires after display:block
-            requestAnimationFrame(() => requestAnimationFrame(() => {
-                overlay.classList.add('active');
-            }));
 
-            // Hold for 3 s, then fade out (200 ms) + navigate
-            setTimeout(() => {
-                overlay.classList.remove('active');
-                setTimeout(() => {
-                    overlay.classList.add('hidden');
-                    clearConfetti();
-                    navigateTo('home');
-                }, 600);
-            }, 3000);
-            return true;
-        }
-    }
-    return false;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // --- Drag and Drop ---
 function initSortable(containerId, isEditMode) {
