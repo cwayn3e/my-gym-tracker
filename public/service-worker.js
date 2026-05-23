@@ -67,56 +67,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     startClock();
     
         // Register Service Worker for PWA
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'none' })
-                .then(registration => {
-                    console.log('ServiceWorker registered:', registration.scope);
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'none' })
+                        .then(registration => {
+                            console.log('ServiceWorker registered: ', registration.scope);
 
-                    // Проверяем обновления при каждом запуске
-                    registration.update();
+                            // При каждом запуске проверяем обновление
+                            registration.update();
 
-                    // Когда новый SW найден
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('New SW installed, activating...');
-                                newWorker.postMessage({ type: 'SKIP_WAITING' });
-                            }
-                        });
-                    });
-                }, err => {
-                    console.log('ServiceWorker registration failed:', err);
-                });
+                            // Когда новый SW начинает устанавливаться
+                            registration.addEventListener('updatefound', () => {
+                                const newWorker = registration.installing;
+                                newWorker.addEventListener('statechange', () => {
+                                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                        // Новая версия кеширована — отправляем команду на активацию
+                                        console.log('New SW installed, sending SKIP_WAITING...');
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                    }
+                                });
+                            });
 
-            // Перезагружаем только один раз при смене контроллера
-            let reloading = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!reloading) {
-                    reloading = true;
-                    console.log('SW updated, reloading...');
-                    window.location.reload();
-                }
-            });
-        });
-    }
+                            // Предотвращаем бесконечную перезагрузку
+                            let reloading = false;
+                            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                                if (!reloading) {
+                                    reloading = true;
+                                    console.log('SW controller changed, reloading...');
                                     window.location.reload();
                                 }
-                            }
-                        };
-                    };
-                }, err => {
-                    console.log('ServiceWorker registration failed: ', err);
+                            });
+                        }, err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
                 });
-
-            // Слушаем, когда новый SW берёт управление — перезагружаем
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.log('Service Worker controller changed, reloading...');
-                window.location.reload();
-            });
-        });
-    }
+            }
     
     // Hide splash screen
     const hideSplash = () => {
@@ -789,20 +774,11 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
         // Гарантированное сохранение в БД
         await db.saveWorkout(wk);
 
-        // Сохраняем в профиль Supabase для мгновенного обновления на других устройствах
-        if (appData.username) {
-            await syncCompletedWorkoutToProfile(wk);
-        }
-
-        // Только для iPhone и только для профиля Катюша (Валику не показываем)
+        // Только для iPhone и только для профиля Катюша
         const isIPhone = navigator.userAgent.includes('iPhone');
         const isKatusha = appData.username === 'Катюша';
-        const isValik = appData.username === 'Валик';
         if (isIPhone && isKatusha) {
             await showiOSCongratulation(wk);
-        } else if (!isValik) {
-            showToast('Тренировка завершена! ✨');
-            navigateTo('home');
         } else {
             showToast('Тренировка завершена! ✨');
             navigateTo('home');
@@ -1223,33 +1199,6 @@ function updateSettingsUI() {
     }
 }
 
-
-// ── Сохранение завершённой тренировки в профиль Supabase ──────────────
-async function syncCompletedWorkoutToProfile(workout) {
-    if (!appData.username) return;
-
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_profiles`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify({
-                username: appData.username,
-                workout_id: workout.id,
-                workout_data: workout,
-                completed_at: new Date().toISOString()
-            })
-        });
-
-        if (!response.ok) throw new Error('Profile save failed');
-    } catch (e) {
-        console.error('Ошибка сохранения в профиль:', e);
-    }
-}
 
 // ── Экспорт / Импорт данных ─────────────────────────────────────────────
 async function exportData() {
