@@ -101,11 +101,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         });
     }
-                                    window.location.reload();
-                                }
-                            }
-                        };
-                    };
                 }, err => {
                     console.log('ServiceWorker registration failed: ', err);
                 });
