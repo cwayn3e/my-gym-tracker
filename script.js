@@ -1,4 +1,3 @@
-
 import { db } from './db.js';
 
 // --- Data Management ---
@@ -6,16 +5,16 @@ const STORAGE_KEY = 'gymtracker_data';
 let appData = {
     workouts: [],
     favorites: [
-        "–ñ–∏–º –ª–µ–∂–∞",
-        "–ü—Ä–∏—Å–µ–¥–∞–Ω–∏—è —Å–æ —à—Ç–∞–Ω–≥–æ–π",
-        "–°—Ç–∞–Ω–æ–≤–∞—è —Ç—è–≥–∞",
-        "–ü–æ–¥—Ç—è–≥–∏–≤–∞–Ω–∏—è",
-        "–û—Ç–∂–∏–º–∞–Ω–∏—è –Ω–∞ –±—Ä—É—Å—å—è—Ö",
-        "–ì–∏–ø–µ—Ä—ç–∫—Å—Ç–µ–Ω–∑–∏—è",
-        "–¢—è–≥–∞ –≤–µ—Ä—Ö–Ω–µ–≥–æ –±–ª–æ–∫–∞",
-        "–¢—è–≥–∞ —à—Ç–∞–Ω–≥–∏ –≤ –Ω–∞–∫–ª–æ–Ω–µ",
-        "–ñ–∏–º –≥–∞–Ω—Ç–µ–ª–µ–π —Å–∏–¥—è",
-        "–ü–æ–¥—ä–µ–º –Ω–∞ –±–∏—Ü–µ–ø—Å"
+        "¶÷¶¨¶- ¶¨¶¶¶¶¶-",
+        "¶ﬂT¿¶¨T¡¶¶¶+¶-¶-¶¨Tœ T¡¶- T»T¬¶-¶-¶¶¶-¶¶",
+        "¶·T¬¶-¶-¶-¶-¶-Tœ T¬Tœ¶¶¶-",
+        "¶ﬂ¶-¶+T¬Tœ¶¶¶¨¶-¶-¶-¶¨Tœ",
+        "¶ﬁT¬¶¶¶¨¶-¶-¶-¶¨Tœ ¶-¶- ¶-T¿T√T¡TÃTœT≈",
+        "¶”¶¨¶¨¶¶T¿TÕ¶¶T¡T¬¶¶¶-¶¨¶¨Tœ",
+        "¶‚Tœ¶¶¶- ¶-¶¶T¿T≈¶-¶¶¶¶¶- ¶-¶¨¶-¶¶¶-",
+        "¶‚Tœ¶¶¶- T»T¬¶-¶-¶¶¶¨ ¶- ¶-¶-¶¶¶¨¶-¶-¶¶",
+        "¶÷¶¨¶- ¶¶¶-¶-T¬¶¶¶¨¶¶¶¶ T¡¶¨¶+Tœ",
+        "¶ﬂ¶-¶+T ¶¶¶- ¶-¶- ¶-¶¨T∆¶¶¶¨T¡"
     ]
 };
 
@@ -74,10 +73,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .then(registration => {
                     console.log('ServiceWorker registered:', registration.scope);
 
-                    // –ü—Ä–æ–≤–µ—Ä—è–µ–º –æ–±–Ω–æ–≤–ª–µ–Ω–∏—è –ø—Ä–∏ –∫–∞–∂–¥–æ–º –∑–∞–ø—É—Å–∫–µ
+                    // ¶ﬂT¿¶-¶-¶¶T¿Tœ¶¶¶- ¶-¶-¶-¶-¶-¶¨¶¶¶-¶¨Tœ ¶¨T¿¶¨ ¶¶¶-¶¶¶+¶-¶- ¶¨¶-¶¨T√T¡¶¶¶¶
                     registration.update();
 
-                    // –ö–æ–≥–¥–∞ –Ω–æ–≤—ã–π SW –Ω–∞–π–¥–µ–Ω
+                    // ¶⁄¶-¶¶¶+¶- ¶-¶-¶-TÀ¶¶ SW ¶-¶-¶¶¶+¶¶¶-
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
                         newWorker.addEventListener('statechange', () => {
@@ -91,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.log('ServiceWorker registration failed:', err);
                 });
 
-            // –ü–µ—Ä–µ–∑–∞–≥—Ä—É–∂–∞–µ–º —Ç–æ–ª—å–∫–æ –æ–¥–∏–Ω —Ä–∞–∑ –ø—Ä–∏ —Å–º–µ–Ω–µ –∫–æ–Ω—Ç—Ä–æ–ª–ª–µ—Ä–∞
+            // ¶ﬂ¶¶T¿¶¶¶¨¶-¶¶T¿T√¶¶¶-¶¶¶- T¬¶-¶¨TÃ¶¶¶- ¶-¶+¶¨¶- T¿¶-¶¨ ¶¨T¿¶¨ T¡¶-¶¶¶-¶¶ ¶¶¶-¶-T¬T¿¶-¶¨¶¨¶¶T¿¶-
             let reloading = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (!reloading) {
@@ -127,8 +126,8 @@ async function loadData() {
 }
 
 async function saveData() {
-    // –≠—Ç–∞ —Ñ—É–Ω–∫—Ü–∏—è —Ç–µ–ø–µ—Ä—å –≤ –æ—Å–Ω–æ–≤–Ω–æ–º —Å–∏–Ω—Ö—Ä–æ–Ω–∏–∑–∏—Ä—É–µ—Ç –∏–∑–±—Ä–∞–Ω–Ω–æ–µ, 
-    // —Ç–∞–∫ –∫–∞–∫ —Ç—Ä–µ–Ω–∏—Ä–æ–≤–∫–∏ —Å–æ—Ö—Ä–∞–Ω—è—é—Ç—Å—è –∏–Ω–¥–∏–≤–∏–¥—É–∞–ª—å–Ω–æ —á–µ—Ä–µ–∑ db.saveWorkout
+    // ¶ÌT¬¶- TƒT√¶-¶¶T∆¶¨Tœ T¬¶¶¶¨¶¶T¿TÃ ¶- ¶-T¡¶-¶-¶-¶-¶-¶- T¡¶¨¶-T≈T¿¶-¶-¶¨¶¨¶¨T¿T√¶¶T¬ ¶¨¶¨¶-T¿¶-¶-¶-¶-¶¶, 
+    // T¬¶-¶¶ ¶¶¶-¶¶ T¬T¿¶¶¶-¶¨T¿¶-¶-¶¶¶¨ T¡¶-T≈T¿¶-¶-TœTŒT¬T¡Tœ ¶¨¶-¶+¶¨¶-¶¨¶+T√¶-¶¨TÃ¶-¶- T«¶¶T¿¶¶¶¨ db.saveWorkout
     await db.saveSetting('favorites', appData.favorites);
     updateDatalist();
     
@@ -295,7 +294,7 @@ function renderHome() {
             const count = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date, wk.id);
             return count >= 2 ? acc + 1 : acc;
         }, 0);
-        const plateauSummaryHtml = plateauCountTotal > 0 ? `<div class="plateau-indicator" title="–£–ø—Ä–∞–∂–Ω–µ–Ω–∏–π –Ω–∞ –ø–ª–∞—Ç–æ">${plateauCountTotal}√ó</div>` : '';
+        const plateauSummaryHtml = plateauCountTotal > 0 ? `<div class="plateau-indicator" title="¶„¶¨T¿¶-¶¶¶-¶¶¶-¶¨¶¶ ¶-¶- ¶¨¶¨¶-T¬¶-">${plateauCountTotal}+◊</div>` : '';
 
         let cardClass = 'workout-card';
         if (isCompleted) cardClass += ' is-completed';
@@ -308,24 +307,24 @@ function renderHome() {
                     ${formatDateDisplay(wk.date)}
                 </div>
                 ${plateauSummaryHtml}
-                <button class="icon-btn-small btn-duplicate" data-id="${wk.id}" title="–ü–æ–≤—Ç–æ—Ä–∏—Ç—å —Ç—Ä–µ–Ω–∏—Ä–æ–≤–∫—É">
+                <button class="icon-btn-small btn-duplicate" data-id="${wk.id}" title="¶ﬂ¶-¶-T¬¶-T¿¶¨T¬TÃ T¬T¿¶¶¶-¶¨T¿¶-¶-¶¶T√">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 </button>
             </div>
-            <h3 class="workout-card-title">${wk.name || '–ë–µ–∑ –Ω–∞–∑–≤–∞–Ω–∏—è'}</h3>
+            <h3 class="workout-card-title">${wk.name || '¶—¶¶¶¨ ¶-¶-¶¨¶-¶-¶-¶¨Tœ'}</h3>
             <div class="workout-card-stats">
                 <div class="stat-badge">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    –£–ø—Ä–∞–∂–Ω–µ–Ω–∏–π: ${totalEx}
+                    ¶„¶¨T¿¶-¶¶¶-¶¶¶-¶¨¶¶: ${totalEx}
                 </div>
                 ${completedEx === totalEx && totalEx > 0 ? 
                     `<div class="stat-badge" style="color: var(--success-color); border-color: rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.1);">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                        –í—ã–ø–æ–ª–Ω–µ–Ω–æ
+                        ¶“TÀ¶¨¶-¶¨¶-¶¶¶-¶-
                     </div>` : 
                     `<div class="stat-badge">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                        –ü—Ä–æ–≥—Ä–µ—Å—Å: ${completedEx}/${totalEx}
+                        ¶ﬂT¿¶-¶¶T¿¶¶T¡T¡: ${completedEx}/${totalEx}
                     </div>`
                 }
             </div>
@@ -352,7 +351,7 @@ function renderCalendar() {
     const year = currentCalendarDate.getFullYear();
     const month = currentCalendarDate.getMonth();
     
-    const monthNames = ["–Ø–Ω–≤–∞—Ä—å", "–§–µ–≤—Ä–∞–ª—å", "–ú–∞—Ä—Ç", "–ê–ø—Ä–µ–ª—å", "–ú–∞–π", "–ò—é–Ω—å", "–ò—é–ª—å", "–ê–≤–≥—É—Å—Ç", "–°–µ–Ω—Ç—è–±—Ä—å", "–û–∫—Ç—è–±—Ä—å", "–ù–æ—è–±—Ä—å", "–î–µ–∫–∞–±—Ä—å"];
+    const monthNames = ["¶Ô¶-¶-¶-T¿TÃ", "¶‰¶¶¶-T¿¶-¶¨TÃ", "¶‹¶-T¿T¬", "¶–¶¨T¿¶¶¶¨TÃ", "¶‹¶-¶¶", "¶ÿTŒ¶-TÃ", "¶ÿTŒ¶¨TÃ", "¶–¶-¶¶T√T¡T¬", "¶·¶¶¶-T¬Tœ¶-T¿TÃ", "¶ﬁ¶¶T¬Tœ¶-T¿TÃ", "¶›¶-Tœ¶-T¿TÃ", "¶‘¶¶¶¶¶-¶-T¿TÃ"];
     monthYearEl.textContent = `${monthNames[month]} ${year}`;
     
     const firstDay = new Date(year, month, 1).getDay();
@@ -364,7 +363,7 @@ function renderCalendar() {
     calendarGrid.innerHTML = '';
     
     // Day labels
-    const weekDays = ['–ü–Ω', '–í—Ç', '–°—Ä', '–ß—Ç', '–ü—Ç', '–°–±', '–í—Å'];
+    const weekDays = ['¶ﬂ¶-', '¶“T¬', '¶·T¿', '¶ÁT¬', '¶ﬂT¬', '¶·¶-', '¶“T¡'];
     weekDays.forEach(day => {
         const dayLabel = document.createElement('div');
         dayLabel.className = 'calendar-day-label';
@@ -418,18 +417,18 @@ function showDaySummary(dateStr) {
     summaryContent.innerHTML = '';
     
     if (workouts.length === 0) {
-        summaryContent.innerHTML = '<p class="no-workouts">–í —ç—Ç–æ—Ç –¥–µ–Ω—å —Ç—Ä–µ–Ω–∏—Ä–æ–≤–æ–∫ –Ω–µ –±—ã–ª–æ.</p>';
+        summaryContent.innerHTML = '<p class="no-workouts">¶“ TÕT¬¶-T¬ ¶+¶¶¶-TÃ T¬T¿¶¶¶-¶¨T¿¶-¶-¶-¶¶ ¶-¶¶ ¶-TÀ¶¨¶-.</p>';
     } else {
         workouts.forEach(wk => {
             const wkEl = document.createElement('div');
             wkEl.className = 'summary-workout-item';
             
-            const exercisesStr = wk.exercises.map(ex => ex.name).join(', ') || '–ë–µ–∑ —É–ø—Ä–∞–∂–Ω–µ–Ω–∏–π';
+            const exercisesStr = wk.exercises.map(ex => ex.name).join(', ') || '¶—¶¶¶¨ T√¶¨T¿¶-¶¶¶-¶¶¶-¶¨¶¶';
             
             wkEl.innerHTML = `
-                <strong>${wk.name || '–¢—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞'}</strong>
+                <strong>${wk.name || '¶‚T¿¶¶¶-¶¨T¿¶-¶-¶¶¶-'}</strong>
                 <p>${exercisesStr}</p>
-                <button class="btn-link btn-open-wk" data-id="${wk.id}">–û—Ç–∫—Ä—ã—Ç—å</button>
+                <button class="btn-link btn-open-wk" data-id="${wk.id}">¶ﬁT¬¶¶T¿TÀT¬TÃ</button>
             `;
             wkEl.querySelector('.btn-open-wk').addEventListener('click', (e) => {
                 openWorkoutView(e.currentTarget.getAttribute('data-id'));
@@ -451,7 +450,7 @@ function openNewWorkout() {
         exercises: []
     };
     
-    document.getElementById('workout-screen-title').textContent = '–ù–æ–≤–∞—è —Ç—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞';
+    document.getElementById('workout-screen-title').textContent = '¶›¶-¶-¶-Tœ T¬T¿¶¶¶-¶¨T¿¶-¶-¶¶¶-';
     initEditScreen();
     navigateTo('workout');
 }
@@ -476,10 +475,10 @@ function duplicateWorkout(id) {
         }))
     };
     
-    document.getElementById('workout-screen-title').textContent = '–ù–æ–≤–∞—è —Ç—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞';
+    document.getElementById('workout-screen-title').textContent = '¶›¶-¶-¶-Tœ T¬T¿¶¶¶-¶¨T¿¶-¶-¶¶¶-';
     initEditScreen();
     navigateTo('workout');
-    showToast('–¢—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞ —Å–∫–æ–ø–∏—Ä–æ–≤–∞–Ω–∞');
+    showToast('¶‚T¿¶¶¶-¶¨T¿¶-¶-¶¶¶- T¡¶¶¶-¶¨¶¨T¿¶-¶-¶-¶-¶-');
 }
 
 function openEditWorkout(id) {
@@ -490,7 +489,7 @@ function openEditWorkout(id) {
     // Deep copy
     currentWorkoutData = JSON.parse(JSON.stringify(wk));
     
-    document.getElementById('workout-screen-title').textContent = '–†–µ–¥–∞–∫—Ç–∏—Ä–æ–≤–∞–Ω–∏–µ';
+    document.getElementById('workout-screen-title').textContent = '¶‡¶¶¶+¶-¶¶T¬¶¨T¿¶-¶-¶-¶-¶¨¶¶';
     initEditScreen();
     navigateTo('workout');
 }
@@ -509,7 +508,7 @@ function renderEditExercises() {
         const exEl = document.createElement('div');
         exEl.className = 'exercise-edit-card';
         const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, currentWorkoutData.date, currentWorkoutData.id);
-        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}√ó</div>` : '';
+        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}+◊</div>` : '';
         
         exEl.innerHTML = `
             <div class="exercise-edit-header">
@@ -521,27 +520,27 @@ function renderEditExercises() {
             </div>
             
             <div class="form-group exercise-name-input">
-                <label class="form-label">–£–ø—Ä–∞–∂–Ω–µ–Ω–∏–µ</label>
-                <input type="text" class="form-input ex-name" placeholder="–ù–∞–∑–≤–∞–Ω–∏–µ (–Ω–∞–ø—Ä. –ñ–∏–º –ª–µ–∂–∞)" value="${ex.name || ''}" list="favorites-datalist" data-index="${index}">
+                <label class="form-label">¶„¶¨T¿¶-¶¶¶-¶¶¶-¶¨¶¶</label>
+                <input type="text" class="form-input ex-name" placeholder="¶›¶-¶¨¶-¶-¶-¶¨¶¶ (¶-¶-¶¨T¿. ¶÷¶¨¶- ¶¨¶¶¶¶¶-)" value="${ex.name || ''}" list="favorites-datalist" data-index="${index}">
             </div>
             
             <div class="set-rep-row">
                 <div class="form-group">
-                    <label class="form-label">–ü–æ–¥—Ö–æ–¥—ã</label>
+                    <label class="form-label">¶ﬂ¶-¶+T≈¶-¶+TÀ</label>
                     <input type="number" class="form-input ex-sets" placeholder="3" value="${ex.sets || ''}" min="1" data-index="${index}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">–ü–æ–≤—Ç–æ—Ä–µ–Ω–∏—è</label>
+                    <label class="form-label">¶ﬂ¶-¶-T¬¶-T¿¶¶¶-¶¨Tœ</label>
                     <input type="number" class="form-input ex-reps" placeholder="10" value="${ex.reps || ''}" min="1" data-index="${index}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">–í–µ—Å (–∫–≥)</label>
+                    <label class="form-label">¶“¶¶T¡ (¶¶¶¶)</label>
                     <input type="number" class="form-input ex-weight" placeholder="50" value="${ex.weight || ''}" step="0.5" data-index="${index}">
                 </div>
             </div>
             
             <div class="form-group">
-                <input type="text" class="form-input ex-comment" placeholder="–ö–æ–º–º–µ–Ω—Ç–∞—Ä–∏–π (–æ–ø—Ü–∏–æ–Ω–∞–ª—å–Ω–æ)" value="${ex.comment || ''}" data-index="${index}">
+                <input type="text" class="form-input ex-comment" placeholder="¶⁄¶-¶-¶-¶¶¶-T¬¶-T¿¶¨¶¶ (¶-¶¨T∆¶¨¶-¶-¶-¶¨TÃ¶-¶-)" value="${ex.comment || ''}" data-index="${index}">
             </div>
         `;
         
@@ -602,9 +601,9 @@ async function saveWorkout() {
     
     if (!currentWorkoutData.name) {
         // Auto-generate name if empty
-        const days = ['–í—Å', '–ü–Ω', '–í—Ç', '–°—Ä', '–ß—Ç', '–ü—Ç', '–°–±'];
+        const days = ['¶“T¡', '¶ﬂ¶-', '¶“T¬', '¶·T¿', '¶ÁT¬', '¶ﬂT¬', '¶·¶-'];
         const dayName = days[new Date(currentWorkoutData.date).getDay()];
-        currentWorkoutData.name = `–¢—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞ (${dayName})`;
+        currentWorkoutData.name = `¶‚T¿¶¶¶-¶¨T¿¶-¶-¶¶¶- (${dayName})`;
     }
     
     // Clean up empty exercises
@@ -623,7 +622,7 @@ async function saveWorkout() {
             await db.saveWorkout(currentWorkoutData);
             updateDatalist();
             renderHome();
-            showToast('–¢—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞ —Å–æ—Ö—Ä–∞–Ω–µ–Ω–∞');
+            showToast('¶‚T¿¶¶¶-¶¨T¿¶-¶-¶¶¶- T¡¶-T≈T¿¶-¶-¶¶¶-¶-');
 
             if (appData.username) {
                 await syncToCloud(true);
@@ -635,8 +634,8 @@ async function saveWorkout() {
                 navigateTo('home');
             }
         } catch (e) {
-            console.error('–û—à–∏–±–∫–∞ —Å–æ—Ö—Ä–∞–Ω–µ–Ω–∏—è (saveWorkout):', e);
-            showToast('–û—à–∏–±–∫–∞ —Å–æ—Ö—Ä–∞–Ω–µ–Ω–∏—è');
+            console.error('¶ﬁT»¶¨¶-¶¶¶- T¡¶-T≈T¿¶-¶-¶¶¶-¶¨Tœ (saveWorkout):', e);
+            showToast('¶ﬁT»¶¨¶-¶¶¶- T¡¶-T≈T¿¶-¶-¶¶¶-¶¨Tœ');
         }
     }
 
@@ -647,7 +646,7 @@ function openWorkoutView(id) {
     
     viewingWorkoutId = id;
     
-    viewTitle.textContent = wk.name || '–¢—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞';
+    viewTitle.textContent = wk.name || '¶‚T¿¶¶¶-¶¨T¿¶-¶-¶¶¶-';
     viewDate.textContent = formatDateDisplay(wk.date);
     
     renderViewExercises(wk);
@@ -663,7 +662,7 @@ function renderViewExercises(wk) {
     if (wk.exercises.length === 0) {
         viewExercisesList.innerHTML = `
             <div class="empty-state" style="height: auto; padding: 2rem;">
-                <p class="empty-desc">–í —ç—Ç–æ–π —Ç—Ä–µ–Ω–∏—Ä–æ–≤–∫–µ –Ω–µ—Ç —É–ø—Ä–∞–∂–Ω–µ–Ω–∏–π.</p>
+                <p class="empty-desc">¶“ TÕT¬¶-¶¶ T¬T¿¶¶¶-¶¨T¿¶-¶-¶¶¶¶ ¶-¶¶T¬ T√¶¨T¿¶-¶¶¶-¶¶¶-¶¨¶¶.</p>
             </div>
         `;
         return;
@@ -675,15 +674,15 @@ function renderViewExercises(wk) {
         
         let statsHtml = '';
         if (ex.sets || ex.reps) {
-            const setsReps = `${ex.sets ? ex.sets : '?'} <span class="accent-text">√ó</span> ${ex.reps ? ex.reps : '?'}`;
+            const setsReps = `${ex.sets ? ex.sets : '?'} <span class="accent-text">+◊</span> ${ex.reps ? ex.reps : '?'}`;
             statsHtml += `<div class="stat-chip">${setsReps}</div>`;
         }
         if (ex.weight) {
-            statsHtml += `<div class="stat-chip">${ex.weight} –∫–≥</div>`;
+            statsHtml += `<div class="stat-chip">${ex.weight} ¶¶¶¶</div>`;
         }
         
         const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date, wk.id);
-        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}√ó</div>` : '';
+        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}+◊</div>` : '';
         
         exEl.innerHTML = `
             ${plateauHtml}
@@ -765,40 +764,40 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     updateProgress(wk);
     renderHome();
 
-    // –ï—Å–ª–∏ —Ç—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞ –∑–∞–≤–µ—Ä—à–µ–Ω–∞ ‚Äî —Å–æ—Ö—Ä–∞–Ω—è–µ–º –∏ –ø–æ–∫–∞–∑—ã–≤–∞–µ–º –ø–æ–∑–¥—Ä–∞–≤–ª–µ–Ω–∏–µ
+    // ¶’T¡¶¨¶¨ T¬T¿¶¶¶-¶¨T¿¶-¶-¶¶¶- ¶¨¶-¶-¶¶T¿T»¶¶¶-¶- Ú¿‘ T¡¶-T≈T¿¶-¶-Tœ¶¶¶- ¶¨ ¶¨¶-¶¶¶-¶¨TÀ¶-¶-¶¶¶- ¶¨¶-¶¨¶+T¿¶-¶-¶¨¶¶¶-¶¨¶¶
     const total = wk.exercises.length;
     const done = wk.exercises.filter(e => e.done).length;
     const isCompleted = total > 0 && done === total;
 
     if (isCompleted) {
-        // –ì–∞—Ä–∞–Ω—Ç–∏—Ä–æ–≤–∞–Ω–Ω–æ–µ —Å–æ—Ö—Ä–∞–Ω–µ–Ω–∏–µ –≤ –ë–î
+        // ¶”¶-T¿¶-¶-T¬¶¨T¿¶-¶-¶-¶-¶-¶-¶¶ T¡¶-T≈T¿¶-¶-¶¶¶-¶¨¶¶ ¶- ¶—¶‘
         await db.saveWorkout(wk);
 
-        // –°–æ—Ö—Ä–∞–Ω—è–µ–º –≤ –ø—Ä–æ—Ñ–∏–ª—å Supabase –¥–ª—è –º–≥–Ω–æ–≤–µ–Ω–Ω–æ–≥–æ –æ–±–Ω–æ–≤–ª–µ–Ω–∏—è –Ω–∞ –¥—Ä—É–≥–∏—Ö —É—Å—Ç—Ä–æ–π—Å—Ç–≤–∞—Ö
+        // ¶·¶-T≈T¿¶-¶-Tœ¶¶¶- ¶- ¶¨T¿¶-Tƒ¶¨¶¨TÃ Supabase ¶+¶¨Tœ ¶-¶¶¶-¶-¶-¶¶¶-¶-¶-¶¶¶- ¶-¶-¶-¶-¶-¶¨¶¶¶-¶¨Tœ ¶-¶- ¶+T¿T√¶¶¶¨T≈ T√T¡T¬T¿¶-¶¶T¡T¬¶-¶-T≈
         if (appData.username) {
             await syncCompletedWorkoutToProfile(wk);
         }
 
-        // –¢–æ–ª—å–∫–æ –¥–ª—è iPhone –∏ —Ç–æ–ª—å–∫–æ –¥–ª—è –ø—Ä–æ—Ñ–∏–ª—è –ö–∞—Ç—é—à–∞ (–í–∞–ª–∏–∫—É –Ω–µ –ø–æ–∫–∞–∑—ã–≤–∞–µ–º)
+        // ¶‚¶-¶¨TÃ¶¶¶- ¶+¶¨Tœ iPhone ¶¨ T¬¶-¶¨TÃ¶¶¶- ¶+¶¨Tœ ¶¨T¿¶-Tƒ¶¨¶¨Tœ ¶⁄¶-T¬TŒT»¶- (¶“¶-¶¨¶¨¶¶T√ ¶-¶¶ ¶¨¶-¶¶¶-¶¨TÀ¶-¶-¶¶¶-)
         const isIPhone = navigator.userAgent.includes('iPhone');
-        const isKatusha = appData.username === '–ö–∞—Ç—é—à–∞';
-        const isValik = appData.username === '–í–∞–ª–∏–∫';
+        const isKatusha = appData.username === '¶⁄¶-T¬TŒT»¶-';
+        const isValik = appData.username === '¶“¶-¶¨¶¨¶¶';
         if (isIPhone && isKatusha) {
             await showiOSCongratulation(wk);
         } else if (!isValik) {
-            showToast('–¢—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞ –∑–∞–≤–µ—Ä—à–µ–Ω–∞! ‚ú®');
+            showToast('¶‚T¿¶¶¶-¶¨T¿¶-¶-¶¶¶- ¶¨¶-¶-¶¶T¿T»¶¶¶-¶-! Ú‹Ë');
             navigateTo('home');
         } else {
-            showToast('–¢—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞ –∑–∞–≤–µ—Ä—à–µ–Ω–∞! ‚ú®');
+            showToast('¶‚T¿¶¶¶-¶¨T¿¶-¶-¶¶¶- ¶¨¶-¶-¶¶T¿T»¶¶¶-¶-! Ú‹Ë');
             navigateTo('home');
         }
 
-        // –ê–≤—Ç–æ—Å–∏–Ω—Ö—Ä–æ–Ω–∏–∑–∞—Ü–∏—è
+        // ¶–¶-T¬¶-T¡¶¨¶-T≈T¿¶-¶-¶¨¶¨¶-T∆¶¨Tœ
         if (appData.username) {
             syncToCloud(true);
         }
     } else {
-        // –ü—Ä–æ–º–µ–∂—É—Ç–æ—á–Ω—ã–µ –∏–∑–º–µ–Ω–µ–Ω–∏—è (–µ—Å–ª–∏ —Ç—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞ –Ω–µ –∑–∞–≤–µ—Ä—à–µ–Ω–∞) ‚Äî —Å–æ—Ö—Ä–∞–Ω—è–µ–º
+        // ¶ﬂT¿¶-¶-¶¶¶¶T√T¬¶-T«¶-TÀ¶¶ ¶¨¶¨¶-¶¶¶-¶¶¶-¶¨Tœ (¶¶T¡¶¨¶¨ T¬T¿¶¶¶-¶¨T¿¶-¶-¶¶¶- ¶-¶¶ ¶¨¶-¶-¶¶T¿T»¶¶¶-¶-) Ú¿‘ T¡¶-T≈T¿¶-¶-Tœ¶¶¶-
         await db.saveWorkout(wk);
         if (appData.username) {
             syncToCloud(true);
@@ -806,7 +805,7 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     }
 }
 
-// ‚îÄ‚îÄ iOS –ø–æ–∑–¥—Ä–∞–≤–ª–µ–Ω–∏–µ (—Ç–æ–ª—å–∫–æ –¥–ª—è –ö–∞—Ç—é—à–∏) ‚îÄ‚îÄ
+// Ú‘¿Ú‘¿ iOS ¶¨¶-¶¨¶+T¿¶-¶-¶¨¶¶¶-¶¨¶¶ (T¬¶-¶¨TÃ¶¶¶- ¶+¶¨Tœ ¶⁄¶-T¬TŒT»¶¨) Ú‘¿Ú‘¿
 async function showiOSCongratulation(wk) {
     spawnConfetti();
     const overlay = document.getElementById('ios-congratulations');
@@ -828,12 +827,12 @@ function updateCardPlateauBadge(cardEl, exercise) {
     
     if (count >= 2) {
         if (badge) {
-            badge.textContent = `${count}√ó`;
+            badge.textContent = `${count}+◊`;
             badge.classList.remove('hidden');
         } else {
             const newBadge = document.createElement('div');
             newBadge.className = 'plateau-indicator';
-            newBadge.textContent = `${count}√ó`;
+            newBadge.textContent = `${count}+◊`;
             const header = cardEl.querySelector('.exercise-edit-header');
             if (header) header.appendChild(newBadge);
         }
@@ -886,7 +885,7 @@ function getPlateauCount(exerciseName, weight, reps, currentWorkoutDate, current
     return count;
 }
 
-// ‚îÄ‚îÄ iOS confetti helpers ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
+// Ú‘¿Ú‘¿ iOS confetti helpers Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿
 function spawnConfetti() {
     const container = document.getElementById('ios-confetti-container');
     if (!container) return;
@@ -1034,7 +1033,7 @@ async function deleteWorkout() {
     
     renderHome();
     closeModal(modalConfirm);
-    showToast('–¢—Ä–µ–Ω–∏—Ä–æ–≤–∫–∞ —É–¥–∞–ª–µ–Ω–∞');
+    showToast('¶‚T¿¶¶¶-¶¨T¿¶-¶-¶¶¶- T√¶+¶-¶¨¶¶¶-¶-');
     navigateTo('home');
 }
 
@@ -1076,7 +1075,7 @@ async function addFavorite() {
     }
 }
 
-// --- Settings (theme only ‚Äî no user name) ---
+// --- Settings (theme only Ú¿‘ no user name) ---
 async function loadSettings() {
     // Nothing to load by name; theme is loaded separately via loadTheme()
 }
@@ -1084,7 +1083,7 @@ async function loadSettings() {
 async function saveSettings() {
     await toggleTheme();
     closeModal(modalSettings);
-    showToast('–¢–µ–º–∞ –∏–∑–º–µ–Ω–µ–Ω–∞');
+    showToast('¶‚¶¶¶-¶- ¶¨¶¨¶-¶¶¶-¶¶¶-¶-');
 }
 
 // --- Modals Utils ---
@@ -1126,10 +1125,10 @@ async function syncToCloud(silent = false) {
 
         if (!response.ok) throw new Error('Cloud save failed');
 
-        if (!silent) showToast('–î–∞–Ω–Ω—ã–µ –≤ –æ–±–ª–∞–∫–µ!');
+        if (!silent) showToast('¶‘¶-¶-¶-TÀ¶¶ ¶- ¶-¶-¶¨¶-¶¶¶¶!');
     } catch (e) {
         console.error(e);
-        if (!silent) showToast('–û—à–∏–±–∫–∞ —Å–æ—Ö—Ä–∞–Ω–µ–Ω–∏—è –≤ –æ–±–ª–∞–∫–æ');
+        if (!silent) showToast('¶ﬁT»¶¨¶-¶¶¶- T¡¶-T≈T¿¶-¶-¶¶¶-¶¨Tœ ¶- ¶-¶-¶¨¶-¶¶¶-');
     }
 }
 
@@ -1139,13 +1138,13 @@ async function loginAccount() {
     const name = input.value.trim();
     
     if (!name) {
-        showToast('–í–≤–µ–¥–∏—Ç–µ –∏–º—è (–ö–∞—Ç—é—à–∞ –∏–ª–∏ –í–∞–ª–∏–∫)');
+        showToast('¶“¶-¶¶¶+¶¨T¬¶¶ ¶¨¶-Tœ (¶⁄¶-T¬TŒT»¶- ¶¨¶¨¶¨ ¶“¶-¶¨¶¨¶¶)');
         return;
     }
     
     try {
         btn.disabled = true;
-        btn.textContent = '–í—Ö–æ–¥...';
+        btn.textContent = '¶“T≈¶-¶+...';
         
         const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_sync?sync_code=eq.${name}&select=data`, {
             headers: {
@@ -1158,11 +1157,11 @@ async function loginAccount() {
         
         // If account exists, ask to import
         if (result && result.length > 0) {
-            if (confirm(`–ù–∞–π–¥–µ–Ω–∞ —Ä–µ–∑–µ—Ä–≤–Ω–∞—è –∫–æ–ø–∏—è –¥–ª—è "${name}". –ó–∞–≥—Ä—É–∑–∏—Ç—å –µ—ë –∏ –∑–∞–º–µ–Ω–∏—Ç—å —Ç–µ–∫—É—â–∏–µ –¥–∞–Ω–Ω—ã–µ?`)) {
+            if (confirm(`¶›¶-¶¶¶+¶¶¶-¶- T¿¶¶¶¨¶¶T¿¶-¶-¶-Tœ ¶¶¶-¶¨¶¨Tœ ¶+¶¨Tœ "${name}". ¶◊¶-¶¶T¿T√¶¨¶¨T¬TÃ ¶¶T— ¶¨ ¶¨¶-¶-¶¶¶-¶¨T¬TÃ T¬¶¶¶¶T√T…¶¨¶¶ ¶+¶-¶-¶-TÀ¶¶?`)) {
                 await db.importAllData(result[0].data);
                 appData.username = name;
                 await db.saveSetting('username', name);
-                showToast('–î–∞–Ω–Ω—ã–µ –∑–∞–≥—Ä—É–∂–µ–Ω—ã! –ü–µ—Ä–µ–∑–∞–≥—Ä—É–∑–∫–∞...');
+                showToast('¶‘¶-¶-¶-TÀ¶¶ ¶¨¶-¶¶T¿T√¶¶¶¶¶-TÀ! ¶ﬂ¶¶T¿¶¶¶¨¶-¶¶T¿T√¶¨¶¶¶-...');
                 setTimeout(() => window.location.reload(), 1500);
                 return;
             }
@@ -1174,22 +1173,22 @@ async function loginAccount() {
         await syncToCloud(); // Save current local data to cloud for this user
         
         updateSettingsUI();
-        showToast(`–í—ã –≤–æ—à–ª–∏ –∫–∞–∫ ${name}`);
+        showToast(`¶“TÀ ¶-¶-T»¶¨¶¨ ¶¶¶-¶¶ ${name}`);
     } catch (e) {
         console.error(e);
-        showToast('–û—à–∏–±–∫–∞ –ø—Ä–∏ –≤—Ö–æ–¥–µ');
+        showToast('¶ﬁT»¶¨¶-¶¶¶- ¶¨T¿¶¨ ¶-T≈¶-¶+¶¶');
     } finally {
         btn.disabled = false;
-        btn.textContent = '–í–æ–π—Ç–∏';
+        btn.textContent = '¶“¶-¶¶T¬¶¨';
     }
 }
 
 async function logoutAccount() {
-    if (confirm('–í—ã–π—Ç–∏ –∏–∑ –∞–∫–∫–∞—É–Ω—Ç–∞? –ê–≤—Ç–æ-—Å–æ—Ö—Ä–∞–Ω–µ–Ω–∏–µ –≤ –æ–±–ª–∞–∫–æ –ø—Ä–µ–∫—Ä–∞—Ç–∏—Ç—Å—è.')) {
+    if (confirm('¶“TÀ¶¶T¬¶¨ ¶¨¶¨ ¶-¶¶¶¶¶-T√¶-T¬¶-? ¶–¶-T¬¶--T¡¶-T≈T¿¶-¶-¶¶¶-¶¨¶¶ ¶- ¶-¶-¶¨¶-¶¶¶- ¶¨T¿¶¶¶¶T¿¶-T¬¶¨T¬T¡Tœ.')) {
         appData.username = null;
         await db.saveSetting('username', null);
         updateSettingsUI();
-        showToast('–í—ã –≤—ã—à–ª–∏ –∏–∑ –∞–∫–∫–∞—É–Ω—Ç–∞');
+        showToast('¶“TÀ ¶-TÀT»¶¨¶¨ ¶¨¶¨ ¶-¶¶¶¶¶-T√¶-T¬¶-');
     }
 }
 
@@ -1209,7 +1208,7 @@ function updateSettingsUI() {
 }
 
 
-// ‚îÄ‚îÄ –°–æ—Ö—Ä–∞–Ω–µ–Ω–∏–µ –∑–∞–≤–µ—Ä—à—ë–Ω–Ω–æ–π —Ç—Ä–µ–Ω–∏—Ä–æ–≤–∫–∏ –≤ –ø—Ä–æ—Ñ–∏–ª—å Supabase ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
+// Ú‘¿Ú‘¿ ¶·¶-T≈T¿¶-¶-¶¶¶-¶¨¶¶ ¶¨¶-¶-¶¶T¿T»T—¶-¶-¶-¶¶ T¬T¿¶¶¶-¶¨T¿¶-¶-¶¶¶¨ ¶- ¶¨T¿¶-Tƒ¶¨¶¨TÃ Supabase Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿
 async function syncCompletedWorkoutToProfile(workout) {
     if (!appData.username) return;
 
@@ -1232,11 +1231,11 @@ async function syncCompletedWorkoutToProfile(workout) {
 
         if (!response.ok) throw new Error('Profile save failed');
     } catch (e) {
-        console.error('–û—à–∏–±–∫–∞ —Å–æ—Ö—Ä–∞–Ω–µ–Ω–∏—è –≤ –ø—Ä–æ—Ñ–∏–ª—å:', e);
+        console.error('¶ﬁT»¶¨¶-¶¶¶- T¡¶-T≈T¿¶-¶-¶¶¶-¶¨Tœ ¶- ¶¨T¿¶-Tƒ¶¨¶¨TÃ:', e);
     }
 }
 
-// ‚îÄ‚îÄ –≠–∫—Å–ø–æ—Ä—Ç / –ò–º–ø–æ—Ä—Ç –¥–∞–Ω–Ω—ã—Ö ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
+// Ú‘¿Ú‘¿ ¶Ì¶¶T¡¶¨¶-T¿T¬ / ¶ÿ¶-¶¨¶-T¿T¬ ¶+¶-¶-¶-TÀT≈ Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿Ú‘¿
 async function exportData() {
     try {
         const data = await db.exportAllData();
@@ -1250,10 +1249,10 @@ async function exportData() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToast('‚úÖ –î–∞–Ω–Ω—ã–µ —ç–∫—Å–ø–æ—Ä—Ç–∏—Ä–æ–≤–∞–Ω—ã');
+        showToast('Ú‹≈ ¶‘¶-¶-¶-TÀ¶¶ TÕ¶¶T¡¶¨¶-T¿T¬¶¨T¿¶-¶-¶-¶-TÀ');
     } catch (e) {
-        console.error('–û—à–∏–±–∫–∞ —ç–∫—Å–ø–æ—Ä—Ç–∞:', e);
-        showToast('‚ùå –û—à–∏–±–∫–∞ —ç–∫—Å–ø–æ—Ä—Ç–∞');
+        console.error('¶ﬁT»¶¨¶-¶¶¶- TÕ¶¶T¡¶¨¶-T¿T¬¶-:', e);
+        showToast('Ú›Ã ¶ﬁT»¶¨¶-¶¶¶- TÕ¶¶T¡¶¨¶-T¿T¬¶-');
     }
 }
 
@@ -1266,27 +1265,27 @@ async function importData(event) {
         const data = JSON.parse(text);
         
         if (!data.workouts || !data.settings) {
-            showToast('‚ùå –ù–µ–≤–µ—Ä–Ω—ã–π —Ñ–æ—Ä–º–∞—Ç —Ñ–∞–π–ª–∞');
+            showToast('Ú›Ã ¶›¶¶¶-¶¶T¿¶-TÀ¶¶ Tƒ¶-T¿¶-¶-T¬ Tƒ¶-¶¶¶¨¶-');
             return;
         }
         
-        // –ü–æ–∫–∞–∑—ã–≤–∞–µ–º –ø–æ–¥—Ç–≤–µ—Ä–∂–¥–µ–Ω–∏–µ
-        if (!confirm(`–ó–∞–≥—Ä—É–∑–∏—Ç—å ${data.workouts.length} —Ç—Ä–µ–Ω–∏—Ä–æ–≤–æ–∫? –¢–µ–∫—É—â–∏–µ –¥–∞–Ω–Ω—ã–µ –±—É–¥—É—Ç –∑–∞–º–µ–Ω–µ–Ω—ã.`)) {
+        // ¶ﬂ¶-¶¶¶-¶¨TÀ¶-¶-¶¶¶- ¶¨¶-¶+T¬¶-¶¶T¿¶¶¶+¶¶¶-¶¨¶¶
+        if (!confirm(`¶◊¶-¶¶T¿T√¶¨¶¨T¬TÃ ${data.workouts.length} T¬T¿¶¶¶-¶¨T¿¶-¶-¶-¶¶? ¶‚¶¶¶¶T√T…¶¨¶¶ ¶+¶-¶-¶-TÀ¶¶ ¶-T√¶+T√T¬ ¶¨¶-¶-¶¶¶-¶¶¶-TÀ.`)) {
             return;
         }
         
         await db.importAllData(data);
         
-        // –ü–µ—Ä–µ–∑–∞–≥—Ä—É–∂–∞–µ–º –¥–∞–Ω–Ω—ã–µ
+        // ¶ﬂ¶¶T¿¶¶¶¨¶-¶¶T¿T√¶¶¶-¶¶¶- ¶+¶-¶-¶-TÀ¶¶
         await loadData();
         renderHome();
-        showToast(`‚úÖ –ó–∞–≥—Ä—É–∂–µ–Ω–æ ${data.workouts.length} —Ç—Ä–µ–Ω–∏—Ä–æ–≤–æ–∫`);
+        showToast(`Ú‹≈ ¶◊¶-¶¶T¿T√¶¶¶¶¶-¶- ${data.workouts.length} T¬T¿¶¶¶-¶¨T¿¶-¶-¶-¶¶`);
         
-        // –°–±—Ä–æ—Å input, —á—Ç–æ–±—ã –º–æ–∂–Ω–æ –±—ã–ª–æ –≤—ã–±—Ä–∞—Ç—å —Ç–æ—Ç –∂–µ —Ñ–∞–π–ª –ø–æ–≤—Ç–æ—Ä–Ω–æ
+        // ¶·¶-T¿¶-T¡ input, T«T¬¶-¶-TÀ ¶-¶-¶¶¶-¶- ¶-TÀ¶¨¶- ¶-TÀ¶-T¿¶-T¬TÃ T¬¶-T¬ ¶¶¶¶ Tƒ¶-¶¶¶¨ ¶¨¶-¶-T¬¶-T¿¶-¶-
         event.target.value = '';
     } catch (e) {
-        console.error('–û—à–∏–±–∫–∞ –∏–º–ø–æ—Ä—Ç–∞:', e);
-        showToast('‚ùå –û—à–∏–±–∫–∞ –∏–º–ø–æ—Ä—Ç–∞');
+        console.error('¶ﬁT»¶¨¶-¶¶¶- ¶¨¶-¶¨¶-T¿T¬¶-:', e);
+        showToast('Ú›Ã ¶ﬁT»¶¨¶-¶¶¶- ¶¨¶-¶¨¶-T¿T¬¶-');
         event.target.value = '';
     }
 }
@@ -1395,5 +1394,6 @@ function setupEventListeners() {
         });
     }
 }
+
 
 
