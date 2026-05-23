@@ -1,20 +1,20 @@
-import { db } from './db.js';
+ï»¿import { db } from './db.js';
 
 // --- Data Management ---
 const STORAGE_KEY = 'gymtracker_data';
 let appData = {
     workouts: [],
     favorites: [
-        "¦Ö¦¬¦- ¦¬¦¦¦¦¦-",
-        "¦ßTÀ¦¬TÁ¦¦¦+¦-¦-¦¬TÏ TÁ¦- TÈTÂ¦-¦-¦¦¦-¦¦",
-        "¦áTÂ¦-¦-¦-¦-¦-TÏ TÂTÏ¦¦¦-",
-        "¦ß¦-¦+TÂTÏ¦¦¦¬¦-¦-¦-¦¬TÏ",
-        "¦ŞTÂ¦¦¦¬¦-¦-¦-¦¬TÏ ¦-¦- ¦-TÀTÃTÁTÌTÏTÅ",
-        "¦Ó¦¬¦¬¦¦TÀTÍ¦¦TÁTÂ¦¦¦-¦¬¦¬TÏ",
-        "¦âTÏ¦¦¦- ¦-¦¦TÀTÅ¦-¦¦¦¦¦- ¦-¦¬¦-¦¦¦-",
-        "¦âTÏ¦¦¦- TÈTÂ¦-¦-¦¦¦¬ ¦- ¦-¦-¦¦¦¬¦-¦-¦¦",
-        "¦Ö¦¬¦- ¦¦¦-¦-TÂ¦¦¦¬¦¦¦¦ TÁ¦¬¦+TÏ",
-        "¦ß¦-¦+TÊ¦¦¦- ¦-¦- ¦-¦¬TÆ¦¦¦¬TÁ"
+        "Â¦Ğ¦Â¦Â¬Â¦- Â¦Â¬Â¦Â¦Â¦Â¦Â¦-",
+        "Â¦Ğ¯TĞÂ¦Â¬TĞ‘Â¦Â¦Â¦+Â¦-Â¦-Â¦Â¬TĞŸ TĞ‘Â¦- TĞ˜TĞ’Â¦-Â¦-Â¦Â¦Â¦-Â¦Â¦",
+        "Â¦Ğ±TĞ’Â¦-Â¦-Â¦-Â¦-Â¦-TĞŸ TĞ’TĞŸÂ¦Â¦Â¦-",
+        "Â¦Ğ¯Â¦-Â¦+TĞ’TĞŸÂ¦Â¦Â¦Â¬Â¦-Â¦-Â¦-Â¦Â¬TĞŸ",
+        "Â¦Ğ®TĞ’Â¦Â¦Â¦Â¬Â¦-Â¦-Â¦-Â¦Â¬TĞŸ Â¦-Â¦- Â¦-TĞTĞ“TĞ‘TĞœTĞŸTĞ•",
+        "Â¦Ğ£Â¦Â¬Â¦Â¬Â¦Â¦TĞTĞÂ¦Â¦TĞ‘TĞ’Â¦Â¦Â¦-Â¦Â¬Â¦Â¬TĞŸ",
+        "Â¦Ğ²TĞŸÂ¦Â¦Â¦- Â¦-Â¦Â¦TĞTĞ•Â¦-Â¦Â¦Â¦Â¦Â¦- Â¦-Â¦Â¬Â¦-Â¦Â¦Â¦-",
+        "Â¦Ğ²TĞŸÂ¦Â¦Â¦- TĞ˜TĞ’Â¦-Â¦-Â¦Â¦Â¦Â¬ Â¦- Â¦-Â¦-Â¦Â¦Â¦Â¬Â¦-Â¦-Â¦Â¦",
+        "Â¦Ğ¦Â¦Â¬Â¦- Â¦Â¦Â¦-Â¦-TĞ’Â¦Â¦Â¦Â¬Â¦Â¦Â¦Â¦ TĞ‘Â¦Â¬Â¦+TĞŸ",
+        "Â¦Ğ¯Â¦-Â¦+TĞšÂ¦Â¦Â¦- Â¦-Â¦- Â¦-Â¦Â¬TĞ–Â¦Â¦Â¦Â¬TĞ‘"
     ]
 };
 
@@ -73,10 +73,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .then(registration => {
                     console.log('ServiceWorker registered:', registration.scope);
 
-                    // ¦ßTÀ¦-¦-¦¦TÀTÏ¦¦¦- ¦-¦-¦-¦-¦-¦¬¦¦¦-¦¬TÏ ¦¬TÀ¦¬ ¦¦¦-¦¦¦+¦-¦- ¦¬¦-¦¬TÃTÁ¦¦¦¦
+                    // Â¦Ğ¯TĞÂ¦-Â¦-Â¦Â¦TĞTĞŸÂ¦Â¦Â¦- Â¦-Â¦-Â¦-Â¦-Â¦-Â¦Â¬Â¦Â¦Â¦-Â¦Â¬TĞŸ Â¦Â¬TĞÂ¦Â¬ Â¦Â¦Â¦-Â¦Â¦Â¦+Â¦-Â¦- Â¦Â¬Â¦-Â¦Â¬TĞ“TĞ‘Â¦Â¦Â¦Â¦
                     registration.update();
 
-                    // ¦Ú¦-¦¦¦+¦- ¦-¦-¦-TË¦¦ SW ¦-¦-¦¦¦+¦¦¦-
+                    // Â¦ĞªÂ¦-Â¦Â¦Â¦+Â¦- Â¦-Â¦-Â¦-TĞ›Â¦Â¦ SW Â¦-Â¦-Â¦Â¦Â¦+Â¦Â¦Â¦-
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
                         newWorker.addEventListener('statechange', () => {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.log('ServiceWorker registration failed:', err);
                 });
 
-            // ¦ß¦¦TÀ¦¦¦¬¦-¦¦TÀTÃ¦¦¦-¦¦¦- TÂ¦-¦¬TÌ¦¦¦- ¦-¦+¦¬¦- TÀ¦-¦¬ ¦¬TÀ¦¬ TÁ¦-¦¦¦-¦¦ ¦¦¦-¦-TÂTÀ¦-¦¬¦¬¦¦TÀ¦-
+            // Â¦Ğ¯Â¦Â¦TĞÂ¦Â¦Â¦Â¬Â¦-Â¦Â¦TĞTĞ“Â¦Â¦Â¦-Â¦Â¦Â¦- TĞ’Â¦-Â¦Â¬TĞœÂ¦Â¦Â¦- Â¦-Â¦+Â¦Â¬Â¦- TĞÂ¦-Â¦Â¬ Â¦Â¬TĞÂ¦Â¬ TĞ‘Â¦-Â¦Â¦Â¦-Â¦Â¦ Â¦Â¦Â¦-Â¦-TĞ’TĞÂ¦-Â¦Â¬Â¦Â¬Â¦Â¦TĞÂ¦-
             let reloading = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (!reloading) {
@@ -126,8 +126,8 @@ async function loadData() {
 }
 
 async function saveData() {
-    // ¦íTÂ¦- TÄTÃ¦-¦¦TÆ¦¬TÏ TÂ¦¦¦¬¦¦TÀTÌ ¦- ¦-TÁ¦-¦-¦-¦-¦-¦- TÁ¦¬¦-TÅTÀ¦-¦-¦¬¦¬¦¬TÀTÃ¦¦TÂ ¦¬¦¬¦-TÀ¦-¦-¦-¦-¦¦, 
-    // TÂ¦-¦¦ ¦¦¦-¦¦ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦¬ TÁ¦-TÅTÀ¦-¦-TÏTÎTÂTÁTÏ ¦¬¦-¦+¦¬¦-¦¬¦+TÃ¦-¦¬TÌ¦-¦- TÇ¦¦TÀ¦¦¦¬ db.saveWorkout
+    // Â¦Ğ½TĞ’Â¦- TĞ”TĞ“Â¦-Â¦Â¦TĞ–Â¦Â¬TĞŸ TĞ’Â¦Â¦Â¦Â¬Â¦Â¦TĞTĞœ Â¦- Â¦-TĞ‘Â¦-Â¦-Â¦-Â¦-Â¦-Â¦- TĞ‘Â¦Â¬Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¬Â¦Â¬Â¦Â¬TĞTĞ“Â¦Â¦TĞ’ Â¦Â¬Â¦Â¬Â¦-TĞÂ¦-Â¦-Â¦-Â¦-Â¦Â¦, 
+    // TĞ’Â¦-Â¦Â¦ Â¦Â¦Â¦-Â¦Â¦ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦Â¬ TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-TĞŸTĞTĞ’TĞ‘TĞŸ Â¦Â¬Â¦-Â¦+Â¦Â¬Â¦-Â¦Â¬Â¦+TĞ“Â¦-Â¦Â¬TĞœÂ¦-Â¦- TĞ—Â¦Â¦TĞÂ¦Â¦Â¦Â¬ db.saveWorkout
     await db.saveSetting('favorites', appData.favorites);
     updateDatalist();
     
@@ -294,7 +294,7 @@ function renderHome() {
             const count = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date, wk.id);
             return count >= 2 ? acc + 1 : acc;
         }, 0);
-        const plateauSummaryHtml = plateauCountTotal > 0 ? `<div class="plateau-indicator" title="¦ã¦¬TÀ¦-¦¦¦-¦¦¦-¦¬¦¦ ¦-¦- ¦¬¦¬¦-TÂ¦-">${plateauCountTotal}+×</div>` : '';
+        const plateauSummaryHtml = plateauCountTotal > 0 ? `<div class="plateau-indicator" title="Â¦Ğ³Â¦Â¬TĞÂ¦-Â¦Â¦Â¦-Â¦Â¦Â¦-Â¦Â¬Â¦Â¦ Â¦-Â¦- Â¦Â¬Â¦Â¬Â¦-TĞ’Â¦-">${plateauCountTotal}+Ğ§</div>` : '';
 
         let cardClass = 'workout-card';
         if (isCompleted) cardClass += ' is-completed';
@@ -307,24 +307,24 @@ function renderHome() {
                     ${formatDateDisplay(wk.date)}
                 </div>
                 ${plateauSummaryHtml}
-                <button class="icon-btn-small btn-duplicate" data-id="${wk.id}" title="¦ß¦-¦-TÂ¦-TÀ¦¬TÂTÌ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦¦TÃ">
+                <button class="icon-btn-small btn-duplicate" data-id="${wk.id}" title="Â¦Ğ¯Â¦-Â¦-TĞ’Â¦-TĞÂ¦Â¬TĞ’TĞœ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦TĞ“">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 </button>
             </div>
-            <h3 class="workout-card-title">${wk.name || '¦Ñ¦¦¦¬ ¦-¦-¦¬¦-¦-¦-¦¬TÏ'}</h3>
+            <h3 class="workout-card-title">${wk.name || 'Â¦Ğ¡Â¦Â¦Â¦Â¬ Â¦-Â¦-Â¦Â¬Â¦-Â¦-Â¦-Â¦Â¬TĞŸ'}</h3>
             <div class="workout-card-stats">
                 <div class="stat-badge">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    ¦ã¦¬TÀ¦-¦¦¦-¦¦¦-¦¬¦¦: ${totalEx}
+                    Â¦Ğ³Â¦Â¬TĞÂ¦-Â¦Â¦Â¦-Â¦Â¦Â¦-Â¦Â¬Â¦Â¦: ${totalEx}
                 </div>
                 ${completedEx === totalEx && totalEx > 0 ? 
                     `<div class="stat-badge" style="color: var(--success-color); border-color: rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.1);">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                        ¦ÒTË¦¬¦-¦¬¦-¦¦¦-¦-
+                        Â¦Ğ¢TĞ›Â¦Â¬Â¦-Â¦Â¬Â¦-Â¦Â¦Â¦-Â¦-
                     </div>` : 
                     `<div class="stat-badge">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                        ¦ßTÀ¦-¦¦TÀ¦¦TÁTÁ: ${completedEx}/${totalEx}
+                        Â¦Ğ¯TĞÂ¦-Â¦Â¦TĞÂ¦Â¦TĞ‘TĞ‘: ${completedEx}/${totalEx}
                     </div>`
                 }
             </div>
@@ -351,7 +351,7 @@ function renderCalendar() {
     const year = currentCalendarDate.getFullYear();
     const month = currentCalendarDate.getMonth();
     
-    const monthNames = ["¦ï¦-¦-¦-TÀTÌ", "¦ä¦¦¦-TÀ¦-¦¬TÌ", "¦Ü¦-TÀTÂ", "¦Ğ¦¬TÀ¦¦¦¬TÌ", "¦Ü¦-¦¦", "¦ØTÎ¦-TÌ", "¦ØTÎ¦¬TÌ", "¦Ğ¦-¦¦TÃTÁTÂ", "¦á¦¦¦-TÂTÏ¦-TÀTÌ", "¦Ş¦¦TÂTÏ¦-TÀTÌ", "¦İ¦-TÏ¦-TÀTÌ", "¦Ô¦¦¦¦¦-¦-TÀTÌ"];
+    const monthNames = ["Â¦Ğ¿Â¦-Â¦-Â¦-TĞTĞœ", "Â¦Ğ´Â¦Â¦Â¦-TĞÂ¦-Â¦Â¬TĞœ", "Â¦Ğ¬Â¦-TĞTĞ’", "Â¦Ğ Â¦Â¬TĞÂ¦Â¦Â¦Â¬TĞœ", "Â¦Ğ¬Â¦-Â¦Â¦", "Â¦Ğ¨TĞÂ¦-TĞœ", "Â¦Ğ¨TĞÂ¦Â¬TĞœ", "Â¦Ğ Â¦-Â¦Â¦TĞ“TĞ‘TĞ’", "Â¦Ğ±Â¦Â¦Â¦-TĞ’TĞŸÂ¦-TĞTĞœ", "Â¦Ğ®Â¦Â¦TĞ’TĞŸÂ¦-TĞTĞœ", "Â¦Ğ­Â¦-TĞŸÂ¦-TĞTĞœ", "Â¦Ğ¤Â¦Â¦Â¦Â¦Â¦-Â¦-TĞTĞœ"];
     monthYearEl.textContent = `${monthNames[month]} ${year}`;
     
     const firstDay = new Date(year, month, 1).getDay();
@@ -363,7 +363,7 @@ function renderCalendar() {
     calendarGrid.innerHTML = '';
     
     // Day labels
-    const weekDays = ['¦ß¦-', '¦ÒTÂ', '¦áTÀ', '¦çTÂ', '¦ßTÂ', '¦á¦-', '¦ÒTÁ'];
+    const weekDays = ['Â¦Ğ¯Â¦-', 'Â¦Ğ¢TĞ’', 'Â¦Ğ±TĞ', 'Â¦Ğ·TĞ’', 'Â¦Ğ¯TĞ’', 'Â¦Ğ±Â¦-', 'Â¦Ğ¢TĞ‘'];
     weekDays.forEach(day => {
         const dayLabel = document.createElement('div');
         dayLabel.className = 'calendar-day-label';
@@ -417,18 +417,18 @@ function showDaySummary(dateStr) {
     summaryContent.innerHTML = '';
     
     if (workouts.length === 0) {
-        summaryContent.innerHTML = '<p class="no-workouts">¦Ò TÍTÂ¦-TÂ ¦+¦¦¦-TÌ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦-¦¦ ¦-¦¦ ¦-TË¦¬¦-.</p>';
+        summaryContent.innerHTML = '<p class="no-workouts">Â¦Ğ¢ TĞTĞ’Â¦-TĞ’ Â¦+Â¦Â¦Â¦-TĞœ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦-Â¦Â¦ Â¦-Â¦Â¦ Â¦-TĞ›Â¦Â¬Â¦-.</p>';
     } else {
         workouts.forEach(wk => {
             const wkEl = document.createElement('div');
             wkEl.className = 'summary-workout-item';
             
-            const exercisesStr = wk.exercises.map(ex => ex.name).join(', ') || '¦Ñ¦¦¦¬ TÃ¦¬TÀ¦-¦¦¦-¦¦¦-¦¬¦¦';
+            const exercisesStr = wk.exercises.map(ex => ex.name).join(', ') || 'Â¦Ğ¡Â¦Â¦Â¦Â¬ TĞ“Â¦Â¬TĞÂ¦-Â¦Â¦Â¦-Â¦Â¦Â¦-Â¦Â¬Â¦Â¦';
             
             wkEl.innerHTML = `
-                <strong>${wk.name || '¦âTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦-'}</strong>
+                <strong>${wk.name || 'Â¦Ğ²TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦-'}</strong>
                 <p>${exercisesStr}</p>
-                <button class="btn-link btn-open-wk" data-id="${wk.id}">¦ŞTÂ¦¦TÀTËTÂTÌ</button>
+                <button class="btn-link btn-open-wk" data-id="${wk.id}">Â¦Ğ®TĞ’Â¦Â¦TĞTĞ›TĞ’TĞœ</button>
             `;
             wkEl.querySelector('.btn-open-wk').addEventListener('click', (e) => {
                 openWorkoutView(e.currentTarget.getAttribute('data-id'));
@@ -450,7 +450,7 @@ function openNewWorkout() {
         exercises: []
     };
     
-    document.getElementById('workout-screen-title').textContent = '¦İ¦-¦-¦-TÏ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦-';
+    document.getElementById('workout-screen-title').textContent = 'Â¦Ğ­Â¦-Â¦-Â¦-TĞŸ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦-';
     initEditScreen();
     navigateTo('workout');
 }
@@ -475,10 +475,10 @@ function duplicateWorkout(id) {
         }))
     };
     
-    document.getElementById('workout-screen-title').textContent = '¦İ¦-¦-¦-TÏ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦-';
+    document.getElementById('workout-screen-title').textContent = 'Â¦Ğ­Â¦-Â¦-Â¦-TĞŸ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦-';
     initEditScreen();
     navigateTo('workout');
-    showToast('¦âTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦- TÁ¦¦¦-¦¬¦¬TÀ¦-¦-¦-¦-¦-');
+    showToast('Â¦Ğ²TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦- TĞ‘Â¦Â¦Â¦-Â¦Â¬Â¦Â¬TĞÂ¦-Â¦-Â¦-Â¦-Â¦-');
 }
 
 function openEditWorkout(id) {
@@ -489,7 +489,7 @@ function openEditWorkout(id) {
     // Deep copy
     currentWorkoutData = JSON.parse(JSON.stringify(wk));
     
-    document.getElementById('workout-screen-title').textContent = '¦à¦¦¦+¦-¦¦TÂ¦¬TÀ¦-¦-¦-¦-¦¬¦¦';
+    document.getElementById('workout-screen-title').textContent = 'Â¦Ğ°Â¦Â¦Â¦+Â¦-Â¦Â¦TĞ’Â¦Â¬TĞÂ¦-Â¦-Â¦-Â¦-Â¦Â¬Â¦Â¦';
     initEditScreen();
     navigateTo('workout');
 }
@@ -508,7 +508,7 @@ function renderEditExercises() {
         const exEl = document.createElement('div');
         exEl.className = 'exercise-edit-card';
         const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, currentWorkoutData.date, currentWorkoutData.id);
-        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}+×</div>` : '';
+        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}+Ğ§</div>` : '';
         
         exEl.innerHTML = `
             <div class="exercise-edit-header">
@@ -520,27 +520,27 @@ function renderEditExercises() {
             </div>
             
             <div class="form-group exercise-name-input">
-                <label class="form-label">¦ã¦¬TÀ¦-¦¦¦-¦¦¦-¦¬¦¦</label>
-                <input type="text" class="form-input ex-name" placeholder="¦İ¦-¦¬¦-¦-¦-¦¬¦¦ (¦-¦-¦¬TÀ. ¦Ö¦¬¦- ¦¬¦¦¦¦¦-)" value="${ex.name || ''}" list="favorites-datalist" data-index="${index}">
+                <label class="form-label">Â¦Ğ³Â¦Â¬TĞÂ¦-Â¦Â¦Â¦-Â¦Â¦Â¦-Â¦Â¬Â¦Â¦</label>
+                <input type="text" class="form-input ex-name" placeholder="Â¦Ğ­Â¦-Â¦Â¬Â¦-Â¦-Â¦-Â¦Â¬Â¦Â¦ (Â¦-Â¦-Â¦Â¬TĞ. Â¦Ğ¦Â¦Â¬Â¦- Â¦Â¬Â¦Â¦Â¦Â¦Â¦-)" value="${ex.name || ''}" list="favorites-datalist" data-index="${index}">
             </div>
             
             <div class="set-rep-row">
                 <div class="form-group">
-                    <label class="form-label">¦ß¦-¦+TÅ¦-¦+TË</label>
+                    <label class="form-label">Â¦Ğ¯Â¦-Â¦+TĞ•Â¦-Â¦+TĞ›</label>
                     <input type="number" class="form-input ex-sets" placeholder="3" value="${ex.sets || ''}" min="1" data-index="${index}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">¦ß¦-¦-TÂ¦-TÀ¦¦¦-¦¬TÏ</label>
+                    <label class="form-label">Â¦Ğ¯Â¦-Â¦-TĞ’Â¦-TĞÂ¦Â¦Â¦-Â¦Â¬TĞŸ</label>
                     <input type="number" class="form-input ex-reps" placeholder="10" value="${ex.reps || ''}" min="1" data-index="${index}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">¦Ò¦¦TÁ (¦¦¦¦)</label>
+                    <label class="form-label">Â¦Ğ¢Â¦Â¦TĞ‘ (Â¦Â¦Â¦Â¦)</label>
                     <input type="number" class="form-input ex-weight" placeholder="50" value="${ex.weight || ''}" step="0.5" data-index="${index}">
                 </div>
             </div>
             
             <div class="form-group">
-                <input type="text" class="form-input ex-comment" placeholder="¦Ú¦-¦-¦-¦¦¦-TÂ¦-TÀ¦¬¦¦ (¦-¦¬TÆ¦¬¦-¦-¦-¦¬TÌ¦-¦-)" value="${ex.comment || ''}" data-index="${index}">
+                <input type="text" class="form-input ex-comment" placeholder="Â¦ĞªÂ¦-Â¦-Â¦-Â¦Â¦Â¦-TĞ’Â¦-TĞÂ¦Â¬Â¦Â¦ (Â¦-Â¦Â¬TĞ–Â¦Â¬Â¦-Â¦-Â¦-Â¦Â¬TĞœÂ¦-Â¦-)" value="${ex.comment || ''}" data-index="${index}">
             </div>
         `;
         
@@ -601,9 +601,9 @@ async function saveWorkout() {
     
     if (!currentWorkoutData.name) {
         // Auto-generate name if empty
-        const days = ['¦ÒTÁ', '¦ß¦-', '¦ÒTÂ', '¦áTÀ', '¦çTÂ', '¦ßTÂ', '¦á¦-'];
+        const days = ['Â¦Ğ¢TĞ‘', 'Â¦Ğ¯Â¦-', 'Â¦Ğ¢TĞ’', 'Â¦Ğ±TĞ', 'Â¦Ğ·TĞ’', 'Â¦Ğ¯TĞ’', 'Â¦Ğ±Â¦-'];
         const dayName = days[new Date(currentWorkoutData.date).getDay()];
-        currentWorkoutData.name = `¦âTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦- (${dayName})`;
+        currentWorkoutData.name = `Â¦Ğ²TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦- (${dayName})`;
     }
     
     // Clean up empty exercises
@@ -622,7 +622,7 @@ async function saveWorkout() {
             await db.saveWorkout(currentWorkoutData);
             updateDatalist();
             renderHome();
-            showToast('¦âTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦- TÁ¦-TÅTÀ¦-¦-¦¦¦-¦-');
+            showToast('Â¦Ğ²TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦- TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¦Â¦-Â¦-');
 
             if (appData.username) {
                 await syncToCloud(true);
@@ -634,8 +634,8 @@ async function saveWorkout() {
                 navigateTo('home');
             }
         } catch (e) {
-            console.error('¦ŞTÈ¦¬¦-¦¦¦- TÁ¦-TÅTÀ¦-¦-¦¦¦-¦¬TÏ (saveWorkout):', e);
-            showToast('¦ŞTÈ¦¬¦-¦¦¦- TÁ¦-TÅTÀ¦-¦-¦¦¦-¦¬TÏ');
+            console.error('Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¦Â¦-Â¦Â¬TĞŸ (saveWorkout):', e);
+            showToast('Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¦Â¦-Â¦Â¬TĞŸ');
         }
     }
 
@@ -646,7 +646,7 @@ function openWorkoutView(id) {
     
     viewingWorkoutId = id;
     
-    viewTitle.textContent = wk.name || '¦âTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦-';
+    viewTitle.textContent = wk.name || 'Â¦Ğ²TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦-';
     viewDate.textContent = formatDateDisplay(wk.date);
     
     renderViewExercises(wk);
@@ -662,7 +662,7 @@ function renderViewExercises(wk) {
     if (wk.exercises.length === 0) {
         viewExercisesList.innerHTML = `
             <div class="empty-state" style="height: auto; padding: 2rem;">
-                <p class="empty-desc">¦Ò TÍTÂ¦-¦¦ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦¦ ¦-¦¦TÂ TÃ¦¬TÀ¦-¦¦¦-¦¦¦-¦¬¦¦.</p>
+                <p class="empty-desc">Â¦Ğ¢ TĞTĞ’Â¦-Â¦Â¦ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦Â¦ Â¦-Â¦Â¦TĞ’ TĞ“Â¦Â¬TĞÂ¦-Â¦Â¦Â¦-Â¦Â¦Â¦-Â¦Â¬Â¦Â¦.</p>
             </div>
         `;
         return;
@@ -674,15 +674,15 @@ function renderViewExercises(wk) {
         
         let statsHtml = '';
         if (ex.sets || ex.reps) {
-            const setsReps = `${ex.sets ? ex.sets : '?'} <span class="accent-text">+×</span> ${ex.reps ? ex.reps : '?'}`;
+            const setsReps = `${ex.sets ? ex.sets : '?'} <span class="accent-text">+Ğ§</span> ${ex.reps ? ex.reps : '?'}`;
             statsHtml += `<div class="stat-chip">${setsReps}</div>`;
         }
         if (ex.weight) {
-            statsHtml += `<div class="stat-chip">${ex.weight} ¦¦¦¦</div>`;
+            statsHtml += `<div class="stat-chip">${ex.weight} Â¦Â¦Â¦Â¦</div>`;
         }
         
         const plateauCount = getPlateauCount(ex.name, ex.weight, ex.reps, wk.date, wk.id);
-        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}+×</div>` : '';
+        const plateauHtml = plateauCount >= 2 ? `<div class="plateau-indicator">${plateauCount}+Ğ§</div>` : '';
         
         exEl.innerHTML = `
             ${plateauHtml}
@@ -764,40 +764,40 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     updateProgress(wk);
     renderHome();
 
-    // ¦ÕTÁ¦¬¦¬ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦- ¦¬¦-¦-¦¦TÀTÈ¦¦¦-¦- òÀÔ TÁ¦-TÅTÀ¦-¦-TÏ¦¦¦- ¦¬ ¦¬¦-¦¦¦-¦¬TË¦-¦-¦¦¦- ¦¬¦-¦¬¦+TÀ¦-¦-¦¬¦¦¦-¦¬¦¦
+    // Â¦Ğ¥TĞ‘Â¦Â¬Â¦Â¬ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦- Â¦Â¬Â¦-Â¦-Â¦Â¦TĞTĞ˜Â¦Â¦Â¦-Â¦- Ñ‚ĞĞ¤ TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-TĞŸÂ¦Â¦Â¦- Â¦Â¬ Â¦Â¬Â¦-Â¦Â¦Â¦-Â¦Â¬TĞ›Â¦-Â¦-Â¦Â¦Â¦- Â¦Â¬Â¦-Â¦Â¬Â¦+TĞÂ¦-Â¦-Â¦Â¬Â¦Â¦Â¦-Â¦Â¬Â¦Â¦
     const total = wk.exercises.length;
     const done = wk.exercises.filter(e => e.done).length;
     const isCompleted = total > 0 && done === total;
 
     if (isCompleted) {
-        // ¦Ó¦-TÀ¦-¦-TÂ¦¬TÀ¦-¦-¦-¦-¦-¦-¦¦ TÁ¦-TÅTÀ¦-¦-¦¦¦-¦¬¦¦ ¦- ¦Ñ¦Ô
+        // Â¦Ğ£Â¦-TĞÂ¦-Â¦-TĞ’Â¦Â¬TĞÂ¦-Â¦-Â¦-Â¦-Â¦-Â¦-Â¦Â¦ TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¦Â¦-Â¦Â¬Â¦Â¦ Â¦- Â¦Ğ¡Â¦Ğ¤
         await db.saveWorkout(wk);
 
-        // ¦á¦-TÅTÀ¦-¦-TÏ¦¦¦- ¦- ¦¬TÀ¦-TÄ¦¬¦¬TÌ Supabase ¦+¦¬TÏ ¦-¦¦¦-¦-¦-¦¦¦-¦-¦-¦¦¦- ¦-¦-¦-¦-¦-¦¬¦¦¦-¦¬TÏ ¦-¦- ¦+TÀTÃ¦¦¦¬TÅ TÃTÁTÂTÀ¦-¦¦TÁTÂ¦-¦-TÅ
+        // Â¦Ğ±Â¦-TĞ•TĞÂ¦-Â¦-TĞŸÂ¦Â¦Â¦- Â¦- Â¦Â¬TĞÂ¦-TĞ”Â¦Â¬Â¦Â¬TĞœ Supabase Â¦+Â¦Â¬TĞŸ Â¦-Â¦Â¦Â¦-Â¦-Â¦-Â¦Â¦Â¦-Â¦-Â¦-Â¦Â¦Â¦- Â¦-Â¦-Â¦-Â¦-Â¦-Â¦Â¬Â¦Â¦Â¦-Â¦Â¬TĞŸ Â¦-Â¦- Â¦+TĞTĞ“Â¦Â¦Â¦Â¬TĞ• TĞ“TĞ‘TĞ’TĞÂ¦-Â¦Â¦TĞ‘TĞ’Â¦-Â¦-TĞ•
         if (appData.username) {
             await syncCompletedWorkoutToProfile(wk);
         }
 
-        // ¦â¦-¦¬TÌ¦¦¦- ¦+¦¬TÏ iPhone ¦¬ TÂ¦-¦¬TÌ¦¦¦- ¦+¦¬TÏ ¦¬TÀ¦-TÄ¦¬¦¬TÏ ¦Ú¦-TÂTÎTÈ¦- (¦Ò¦-¦¬¦¬¦¦TÃ ¦-¦¦ ¦¬¦-¦¦¦-¦¬TË¦-¦-¦¦¦-)
+        // Â¦Ğ²Â¦-Â¦Â¬TĞœÂ¦Â¦Â¦- Â¦+Â¦Â¬TĞŸ iPhone Â¦Â¬ TĞ’Â¦-Â¦Â¬TĞœÂ¦Â¦Â¦- Â¦+Â¦Â¬TĞŸ Â¦Â¬TĞÂ¦-TĞ”Â¦Â¬Â¦Â¬TĞŸ Â¦ĞªÂ¦-TĞ’TĞTĞ˜Â¦- (Â¦Ğ¢Â¦-Â¦Â¬Â¦Â¬Â¦Â¦TĞ“ Â¦-Â¦Â¦ Â¦Â¬Â¦-Â¦Â¦Â¦-Â¦Â¬TĞ›Â¦-Â¦-Â¦Â¦Â¦-)
         const isIPhone = navigator.userAgent.includes('iPhone');
-        const isKatusha = appData.username === '¦Ú¦-TÂTÎTÈ¦-';
-        const isValik = appData.username === '¦Ò¦-¦¬¦¬¦¦';
+        const isKatusha = appData.username === 'Â¦ĞªÂ¦-TĞ’TĞTĞ˜Â¦-';
+        const isValik = appData.username === 'Â¦Ğ¢Â¦-Â¦Â¬Â¦Â¬Â¦Â¦';
         if (isIPhone && isKatusha) {
             await showiOSCongratulation(wk);
         } else if (!isValik) {
-            showToast('¦âTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦- ¦¬¦-¦-¦¦TÀTÈ¦¦¦-¦-! òÜè');
+            showToast('Ğ¢Ñ€ĞµĞ½Ğ¸Ñ€Ğ¾Ğ²ĞºĞ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ° Ğ¸ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ°! ?');
             navigateTo('home');
         } else {
-            showToast('¦âTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦- ¦¬¦-¦-¦¦TÀTÈ¦¦¦-¦-! òÜè');
-            navigateTo('home');
+            showToast('Â¦Ğ²TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦- Â¦Â¬Â¦-Â¦-Â¦Â¦TĞTĞ˜Â¦Â¦Â¦-Â¦-! Ñ‚Ğ¬Ğ¸');
+            showToast('Ğ¢Ñ€ĞµĞ½Ğ¸Ñ€Ğ¾Ğ²ĞºĞ° Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ° Ğ¸ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ°! ?');
         }
 
-        // ¦Ğ¦-TÂ¦-TÁ¦¬¦-TÅTÀ¦-¦-¦¬¦¬¦-TÆ¦¬TÏ
+        // Â¦Ğ Â¦-TĞ’Â¦-TĞ‘Â¦Â¬Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¬Â¦Â¬Â¦-TĞ–Â¦Â¬TĞŸ
         if (appData.username) {
             syncToCloud(true);
         }
     } else {
-        // ¦ßTÀ¦-¦-¦¦¦¦TÃTÂ¦-TÇ¦-TË¦¦ ¦¬¦¬¦-¦¦¦-¦¦¦-¦¬TÏ (¦¦TÁ¦¬¦¬ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦- ¦-¦¦ ¦¬¦-¦-¦¦TÀTÈ¦¦¦-¦-) òÀÔ TÁ¦-TÅTÀ¦-¦-TÏ¦¦¦-
+        // Â¦Ğ¯TĞÂ¦-Â¦-Â¦Â¦Â¦Â¦TĞ“TĞ’Â¦-TĞ—Â¦-TĞ›Â¦Â¦ Â¦Â¬Â¦Â¬Â¦-Â¦Â¦Â¦-Â¦Â¦Â¦-Â¦Â¬TĞŸ (Â¦Â¦TĞ‘Â¦Â¬Â¦Â¬ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦- Â¦-Â¦Â¦ Â¦Â¬Â¦-Â¦-Â¦Â¦TĞTĞ˜Â¦Â¦Â¦-Â¦-) Ñ‚ĞĞ¤ TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-TĞŸÂ¦Â¦Â¦-
         await db.saveWorkout(wk);
         if (appData.username) {
             syncToCloud(true);
@@ -805,7 +805,7 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     }
 }
 
-// òÔÀòÔÀ iOS ¦¬¦-¦¬¦+TÀ¦-¦-¦¬¦¦¦-¦¬¦¦ (TÂ¦-¦¬TÌ¦¦¦- ¦+¦¬TÏ ¦Ú¦-TÂTÎTÈ¦¬) òÔÀòÔÀ
+// Ñ‚Ğ¤ĞÑ‚Ğ¤Ğ iOS Â¦Â¬Â¦-Â¦Â¬Â¦+TĞÂ¦-Â¦-Â¦Â¬Â¦Â¦Â¦-Â¦Â¬Â¦Â¦ (TĞ’Â¦-Â¦Â¬TĞœÂ¦Â¦Â¦- Â¦+Â¦Â¬TĞŸ Â¦ĞªÂ¦-TĞ’TĞTĞ˜Â¦Â¬) Ñ‚Ğ¤ĞÑ‚Ğ¤Ğ
 async function showiOSCongratulation(wk) {
     spawnConfetti();
     const overlay = document.getElementById('ios-congratulations');
@@ -827,12 +827,12 @@ function updateCardPlateauBadge(cardEl, exercise) {
     
     if (count >= 2) {
         if (badge) {
-            badge.textContent = `${count}+×`;
+            badge.textContent = `${count}+Ğ§`;
             badge.classList.remove('hidden');
         } else {
             const newBadge = document.createElement('div');
             newBadge.className = 'plateau-indicator';
-            newBadge.textContent = `${count}+×`;
+            newBadge.textContent = `${count}+Ğ§`;
             const header = cardEl.querySelector('.exercise-edit-header');
             if (header) header.appendChild(newBadge);
         }
@@ -885,7 +885,7 @@ function getPlateauCount(exerciseName, weight, reps, currentWorkoutDate, current
     return count;
 }
 
-// òÔÀòÔÀ iOS confetti helpers òÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀ
+// Ñ‚Ğ¤ĞÑ‚Ğ¤Ğ iOS confetti helpers Ñ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤Ğ
 function spawnConfetti() {
     const container = document.getElementById('ios-confetti-container');
     if (!container) return;
@@ -1033,7 +1033,7 @@ async function deleteWorkout() {
     
     renderHome();
     closeModal(modalConfirm);
-    showToast('¦âTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦- TÃ¦+¦-¦¬¦¦¦-¦-');
+    showToast('Â¦Ğ²TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦- TĞ“Â¦+Â¦-Â¦Â¬Â¦Â¦Â¦-Â¦-');
     navigateTo('home');
 }
 
@@ -1075,7 +1075,7 @@ async function addFavorite() {
     }
 }
 
-// --- Settings (theme only òÀÔ no user name) ---
+// --- Settings (theme only Ñ‚ĞĞ¤ no user name) ---
 async function loadSettings() {
     // Nothing to load by name; theme is loaded separately via loadTheme()
 }
@@ -1083,7 +1083,7 @@ async function loadSettings() {
 async function saveSettings() {
     await toggleTheme();
     closeModal(modalSettings);
-    showToast('¦â¦¦¦-¦- ¦¬¦¬¦-¦¦¦-¦¦¦-¦-');
+    showToast('Â¦Ğ²Â¦Â¦Â¦-Â¦- Â¦Â¬Â¦Â¬Â¦-Â¦Â¦Â¦-Â¦Â¦Â¦-Â¦-');
 }
 
 // --- Modals Utils ---
@@ -1125,10 +1125,10 @@ async function syncToCloud(silent = false) {
 
         if (!response.ok) throw new Error('Cloud save failed');
 
-        if (!silent) showToast('¦Ô¦-¦-¦-TË¦¦ ¦- ¦-¦-¦¬¦-¦¦¦¦!');
+        if (!silent) showToast('Â¦Ğ¤Â¦-Â¦-Â¦-TĞ›Â¦Â¦ Â¦- Â¦-Â¦-Â¦Â¬Â¦-Â¦Â¦Â¦Â¦!');
     } catch (e) {
         console.error(e);
-        if (!silent) showToast('¦ŞTÈ¦¬¦-¦¦¦- TÁ¦-TÅTÀ¦-¦-¦¦¦-¦¬TÏ ¦- ¦-¦-¦¬¦-¦¦¦-');
+        if (!silent) showToast('Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¦Â¦-Â¦Â¬TĞŸ Â¦- Â¦-Â¦-Â¦Â¬Â¦-Â¦Â¦Â¦-');
     }
 }
 
@@ -1138,13 +1138,13 @@ async function loginAccount() {
     const name = input.value.trim();
     
     if (!name) {
-        showToast('¦Ò¦-¦¦¦+¦¬TÂ¦¦ ¦¬¦-TÏ (¦Ú¦-TÂTÎTÈ¦- ¦¬¦¬¦¬ ¦Ò¦-¦¬¦¬¦¦)');
+        showToast('Â¦Ğ¢Â¦-Â¦Â¦Â¦+Â¦Â¬TĞ’Â¦Â¦ Â¦Â¬Â¦-TĞŸ (Â¦ĞªÂ¦-TĞ’TĞTĞ˜Â¦- Â¦Â¬Â¦Â¬Â¦Â¬ Â¦Ğ¢Â¦-Â¦Â¬Â¦Â¬Â¦Â¦)');
         return;
     }
     
     try {
         btn.disabled = true;
-        btn.textContent = '¦ÒTÅ¦-¦+...';
+        btn.textContent = 'Â¦Ğ¢TĞ•Â¦-Â¦+...';
         
         const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_sync?sync_code=eq.${name}&select=data`, {
             headers: {
@@ -1157,11 +1157,11 @@ async function loginAccount() {
         
         // If account exists, ask to import
         if (result && result.length > 0) {
-            if (confirm(`¦İ¦-¦¦¦+¦¦¦-¦- TÀ¦¦¦¬¦¦TÀ¦-¦-¦-TÏ ¦¦¦-¦¬¦¬TÏ ¦+¦¬TÏ "${name}". ¦×¦-¦¦TÀTÃ¦¬¦¬TÂTÌ ¦¦TÑ ¦¬ ¦¬¦-¦-¦¦¦-¦¬TÂTÌ TÂ¦¦¦¦TÃTÉ¦¬¦¦ ¦+¦-¦-¦-TË¦¦?`)) {
+            if (confirm(`Â¦Ğ­Â¦-Â¦Â¦Â¦+Â¦Â¦Â¦-Â¦- TĞÂ¦Â¦Â¦Â¬Â¦Â¦TĞÂ¦-Â¦-Â¦-TĞŸ Â¦Â¦Â¦-Â¦Â¬Â¦Â¬TĞŸ Â¦+Â¦Â¬TĞŸ "${name}". Â¦Ğ§Â¦-Â¦Â¦TĞTĞ“Â¦Â¬Â¦Â¬TĞ’TĞœ Â¦Â¦TĞ¡ Â¦Â¬ Â¦Â¬Â¦-Â¦-Â¦Â¦Â¦-Â¦Â¬TĞ’TĞœ TĞ’Â¦Â¦Â¦Â¦TĞ“TĞ™Â¦Â¬Â¦Â¦ Â¦+Â¦-Â¦-Â¦-TĞ›Â¦Â¦?`)) {
                 await db.importAllData(result[0].data);
                 appData.username = name;
                 await db.saveSetting('username', name);
-                showToast('¦Ô¦-¦-¦-TË¦¦ ¦¬¦-¦¦TÀTÃ¦¦¦¦¦-TË! ¦ß¦¦TÀ¦¦¦¬¦-¦¦TÀTÃ¦¬¦¦¦-...');
+                showToast('Â¦Ğ¤Â¦-Â¦-Â¦-TĞ›Â¦Â¦ Â¦Â¬Â¦-Â¦Â¦TĞTĞ“Â¦Â¦Â¦Â¦Â¦-TĞ›! Â¦Ğ¯Â¦Â¦TĞÂ¦Â¦Â¦Â¬Â¦-Â¦Â¦TĞTĞ“Â¦Â¬Â¦Â¦Â¦-...');
                 setTimeout(() => window.location.reload(), 1500);
                 return;
             }
@@ -1173,22 +1173,22 @@ async function loginAccount() {
         await syncToCloud(); // Save current local data to cloud for this user
         
         updateSettingsUI();
-        showToast(`¦ÒTË ¦-¦-TÈ¦¬¦¬ ¦¦¦-¦¦ ${name}`);
+        showToast(`Â¦Ğ¢TĞ› Â¦-Â¦-TĞ˜Â¦Â¬Â¦Â¬ Â¦Â¦Â¦-Â¦Â¦ ${name}`);
     } catch (e) {
         console.error(e);
-        showToast('¦ŞTÈ¦¬¦-¦¦¦- ¦¬TÀ¦¬ ¦-TÅ¦-¦+¦¦');
+        showToast('Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- Â¦Â¬TĞÂ¦Â¬ Â¦-TĞ•Â¦-Â¦+Â¦Â¦');
     } finally {
         btn.disabled = false;
-        btn.textContent = '¦Ò¦-¦¦TÂ¦¬';
+        btn.textContent = 'Â¦Ğ¢Â¦-Â¦Â¦TĞ’Â¦Â¬';
     }
 }
 
 async function logoutAccount() {
-    if (confirm('¦ÒTË¦¦TÂ¦¬ ¦¬¦¬ ¦-¦¦¦¦¦-TÃ¦-TÂ¦-? ¦Ğ¦-TÂ¦--TÁ¦-TÅTÀ¦-¦-¦¦¦-¦¬¦¦ ¦- ¦-¦-¦¬¦-¦¦¦- ¦¬TÀ¦¦¦¦TÀ¦-TÂ¦¬TÂTÁTÏ.')) {
+    if (confirm('Â¦Ğ¢TĞ›Â¦Â¦TĞ’Â¦Â¬ Â¦Â¬Â¦Â¬ Â¦-Â¦Â¦Â¦Â¦Â¦-TĞ“Â¦-TĞ’Â¦-? Â¦Ğ Â¦-TĞ’Â¦--TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¦Â¦-Â¦Â¬Â¦Â¦ Â¦- Â¦-Â¦-Â¦Â¬Â¦-Â¦Â¦Â¦- Â¦Â¬TĞÂ¦Â¦Â¦Â¦TĞÂ¦-TĞ’Â¦Â¬TĞ’TĞ‘TĞŸ.')) {
         appData.username = null;
         await db.saveSetting('username', null);
         updateSettingsUI();
-        showToast('¦ÒTË ¦-TËTÈ¦¬¦¬ ¦¬¦¬ ¦-¦¦¦¦¦-TÃ¦-TÂ¦-');
+        showToast('Â¦Ğ¢TĞ› Â¦-TĞ›TĞ˜Â¦Â¬Â¦Â¬ Â¦Â¬Â¦Â¬ Â¦-Â¦Â¦Â¦Â¦Â¦-TĞ“Â¦-TĞ’Â¦-');
     }
 }
 
@@ -1208,7 +1208,7 @@ function updateSettingsUI() {
 }
 
 
-// òÔÀòÔÀ ¦á¦-TÅTÀ¦-¦-¦¦¦-¦¬¦¦ ¦¬¦-¦-¦¦TÀTÈTÑ¦-¦-¦-¦¦ TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦¦¦¬ ¦- ¦¬TÀ¦-TÄ¦¬¦¬TÌ Supabase òÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀ
+// Ñ‚Ğ¤ĞÑ‚Ğ¤Ğ Â¦Ğ±Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¦Â¦-Â¦Â¬Â¦Â¦ Â¦Â¬Â¦-Â¦-Â¦Â¦TĞTĞ˜TĞ¡Â¦-Â¦-Â¦-Â¦Â¦ TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦Â¦Â¦Â¬ Â¦- Â¦Â¬TĞÂ¦-TĞ”Â¦Â¬Â¦Â¬TĞœ Supabase Ñ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤Ğ
 async function syncCompletedWorkoutToProfile(workout) {
     if (!appData.username) return;
 
@@ -1231,11 +1231,11 @@ async function syncCompletedWorkoutToProfile(workout) {
 
         if (!response.ok) throw new Error('Profile save failed');
     } catch (e) {
-        console.error('¦ŞTÈ¦¬¦-¦¦¦- TÁ¦-TÅTÀ¦-¦-¦¦¦-¦¬TÏ ¦- ¦¬TÀ¦-TÄ¦¬¦¬TÌ:', e);
+        console.error('Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- TĞ‘Â¦-TĞ•TĞÂ¦-Â¦-Â¦Â¦Â¦-Â¦Â¬TĞŸ Â¦- Â¦Â¬TĞÂ¦-TĞ”Â¦Â¬Â¦Â¬TĞœ:', e);
     }
 }
 
-// òÔÀòÔÀ ¦í¦¦TÁ¦¬¦-TÀTÂ / ¦Ø¦-¦¬¦-TÀTÂ ¦+¦-¦-¦-TËTÅ òÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀòÔÀ
+// Ñ‚Ğ¤ĞÑ‚Ğ¤Ğ Â¦Ğ½Â¦Â¦TĞ‘Â¦Â¬Â¦-TĞTĞ’ / Â¦Ğ¨Â¦-Â¦Â¬Â¦-TĞTĞ’ Â¦+Â¦-Â¦-Â¦-TĞ›TĞ• Ñ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤ĞÑ‚Ğ¤Ğ
 async function exportData() {
     try {
         const data = await db.exportAllData();
@@ -1249,10 +1249,10 @@ async function exportData() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToast('òÜÅ ¦Ô¦-¦-¦-TË¦¦ TÍ¦¦TÁ¦¬¦-TÀTÂ¦¬TÀ¦-¦-¦-¦-TË');
+        showToast('Ñ‚Ğ¬Ğ• Â¦Ğ¤Â¦-Â¦-Â¦-TĞ›Â¦Â¦ TĞÂ¦Â¦TĞ‘Â¦Â¬Â¦-TĞTĞ’Â¦Â¬TĞÂ¦-Â¦-Â¦-Â¦-TĞ›');
     } catch (e) {
-        console.error('¦ŞTÈ¦¬¦-¦¦¦- TÍ¦¦TÁ¦¬¦-TÀTÂ¦-:', e);
-        showToast('òİÌ ¦ŞTÈ¦¬¦-¦¦¦- TÍ¦¦TÁ¦¬¦-TÀTÂ¦-');
+        console.error('Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- TĞÂ¦Â¦TĞ‘Â¦Â¬Â¦-TĞTĞ’Â¦-:', e);
+        showToast('Ñ‚Ğ­Ğœ Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- TĞÂ¦Â¦TĞ‘Â¦Â¬Â¦-TĞTĞ’Â¦-');
     }
 }
 
@@ -1265,27 +1265,27 @@ async function importData(event) {
         const data = JSON.parse(text);
         
         if (!data.workouts || !data.settings) {
-            showToast('òİÌ ¦İ¦¦¦-¦¦TÀ¦-TË¦¦ TÄ¦-TÀ¦-¦-TÂ TÄ¦-¦¦¦¬¦-');
+            showToast('Ñ‚Ğ­Ğœ Â¦Ğ­Â¦Â¦Â¦-Â¦Â¦TĞÂ¦-TĞ›Â¦Â¦ TĞ”Â¦-TĞÂ¦-Â¦-TĞ’ TĞ”Â¦-Â¦Â¦Â¦Â¬Â¦-');
             return;
         }
         
-        // ¦ß¦-¦¦¦-¦¬TË¦-¦-¦¦¦- ¦¬¦-¦+TÂ¦-¦¦TÀ¦¦¦+¦¦¦-¦¬¦¦
-        if (!confirm(`¦×¦-¦¦TÀTÃ¦¬¦¬TÂTÌ ${data.workouts.length} TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦-¦¦? ¦â¦¦¦¦TÃTÉ¦¬¦¦ ¦+¦-¦-¦-TË¦¦ ¦-TÃ¦+TÃTÂ ¦¬¦-¦-¦¦¦-¦¦¦-TË.`)) {
+        // Â¦Ğ¯Â¦-Â¦Â¦Â¦-Â¦Â¬TĞ›Â¦-Â¦-Â¦Â¦Â¦- Â¦Â¬Â¦-Â¦+TĞ’Â¦-Â¦Â¦TĞÂ¦Â¦Â¦+Â¦Â¦Â¦-Â¦Â¬Â¦Â¦
+        if (!confirm(`Â¦Ğ§Â¦-Â¦Â¦TĞTĞ“Â¦Â¬Â¦Â¬TĞ’TĞœ ${data.workouts.length} TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦-Â¦Â¦? Â¦Ğ²Â¦Â¦Â¦Â¦TĞ“TĞ™Â¦Â¬Â¦Â¦ Â¦+Â¦-Â¦-Â¦-TĞ›Â¦Â¦ Â¦-TĞ“Â¦+TĞ“TĞ’ Â¦Â¬Â¦-Â¦-Â¦Â¦Â¦-Â¦Â¦Â¦-TĞ›.`)) {
             return;
         }
         
         await db.importAllData(data);
         
-        // ¦ß¦¦TÀ¦¦¦¬¦-¦¦TÀTÃ¦¦¦-¦¦¦- ¦+¦-¦-¦-TË¦¦
+        // Â¦Ğ¯Â¦Â¦TĞÂ¦Â¦Â¦Â¬Â¦-Â¦Â¦TĞTĞ“Â¦Â¦Â¦-Â¦Â¦Â¦- Â¦+Â¦-Â¦-Â¦-TĞ›Â¦Â¦
         await loadData();
         renderHome();
-        showToast(`òÜÅ ¦×¦-¦¦TÀTÃ¦¦¦¦¦-¦- ${data.workouts.length} TÂTÀ¦¦¦-¦¬TÀ¦-¦-¦-¦¦`);
+        showToast(`Ñ‚Ğ¬Ğ• Â¦Ğ§Â¦-Â¦Â¦TĞTĞ“Â¦Â¦Â¦Â¦Â¦-Â¦- ${data.workouts.length} TĞ’TĞÂ¦Â¦Â¦-Â¦Â¬TĞÂ¦-Â¦-Â¦-Â¦Â¦`);
         
-        // ¦á¦-TÀ¦-TÁ input, TÇTÂ¦-¦-TË ¦-¦-¦¦¦-¦- ¦-TË¦¬¦- ¦-TË¦-TÀ¦-TÂTÌ TÂ¦-TÂ ¦¦¦¦ TÄ¦-¦¦¦¬ ¦¬¦-¦-TÂ¦-TÀ¦-¦-
+        // Â¦Ğ±Â¦-TĞÂ¦-TĞ‘ input, TĞ—TĞ’Â¦-Â¦-TĞ› Â¦-Â¦-Â¦Â¦Â¦-Â¦- Â¦-TĞ›Â¦Â¬Â¦- Â¦-TĞ›Â¦-TĞÂ¦-TĞ’TĞœ TĞ’Â¦-TĞ’ Â¦Â¦Â¦Â¦ TĞ”Â¦-Â¦Â¦Â¦Â¬ Â¦Â¬Â¦-Â¦-TĞ’Â¦-TĞÂ¦-Â¦-
         event.target.value = '';
     } catch (e) {
-        console.error('¦ŞTÈ¦¬¦-¦¦¦- ¦¬¦-¦¬¦-TÀTÂ¦-:', e);
-        showToast('òİÌ ¦ŞTÈ¦¬¦-¦¦¦- ¦¬¦-¦¬¦-TÀTÂ¦-');
+        console.error('Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- Â¦Â¬Â¦-Â¦Â¬Â¦-TĞTĞ’Â¦-:', e);
+        showToast('Ñ‚Ğ­Ğœ Â¦Ğ®TĞ˜Â¦Â¬Â¦-Â¦Â¦Â¦- Â¦Â¬Â¦-Â¦Â¬Â¦-TĞTĞ’Â¦-');
         event.target.value = '';
     }
 }
@@ -1394,6 +1394,8 @@ function setupEventListeners() {
         });
     }
 }
+
+
 
 
 
