@@ -609,22 +609,26 @@ async function saveWorkout() {
         appData.workouts.push(currentWorkoutData);
     }
     
-    await db.saveWorkout(currentWorkoutData);
-        updateDatalist();
-        renderHome();
-    
-        showToast('Тренировка сохранена');
+    try {
+            await db.saveWorkout(currentWorkoutData);
+            updateDatalist();
+            renderHome();
+            showToast('Тренировка сохранена');
 
-        if (appData.username) {
-            syncToCloud(true);
-        }
+            if (appData.username) {
+                await syncToCloud(true);
+            }
 
-        if (editingWorkoutId) {
-            openWorkoutView(currentWorkoutData.id);
-        } else {
-            navigateTo('home');
+            if (editingWorkoutId) {
+                openWorkoutView(currentWorkoutData.id);
+            } else {
+                navigateTo('home');
+            }
+        } catch (e) {
+            console.error('Ошибка сохранения (saveWorkout):', e);
+            showToast('Ошибка сохранения');
         }
-}
+    }
 
 // --- View Screen ---
 function openWorkoutView(id) {
@@ -1186,6 +1190,61 @@ function updateSettingsUI() {
 }
 
 
+// ── Экспорт / Импорт данных ─────────────────────────────────────────────
+async function exportData() {
+    try {
+        const data = await db.exportAllData();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const dateStr = getTodayDateStr();
+        a.download = `gymtracker_backup_${dateStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('✅ Данные экспортированы');
+    } catch (e) {
+        console.error('Ошибка экспорта:', e);
+        showToast('❌ Ошибка экспорта');
+    }
+}
+
+async function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        
+        if (!data.workouts || !data.settings) {
+            showToast('❌ Неверный формат файла');
+            return;
+        }
+        
+        // Показываем подтверждение
+        if (!confirm(`Загрузить ${data.workouts.length} тренировок? Текущие данные будут заменены.`)) {
+            return;
+        }
+        
+        await db.importAllData(data);
+        
+        // Перезагружаем данные
+        await loadData();
+        renderHome();
+        showToast(`✅ Загружено ${data.workouts.length} тренировок`);
+        
+        // Сброс input, чтобы можно было выбрать тот же файл повторно
+        event.target.value = '';
+    } catch (e) {
+        console.error('Ошибка импорта:', e);
+        showToast('❌ Ошибка импорта');
+        event.target.value = '';
+    }
+}
+
 // --- Events Setup ---
 function setupEventListeners() {
     // Buttons
@@ -1256,9 +1315,16 @@ function setupEventListeners() {
         if (e.key === 'Enter') addFavorite();
     });
 
-    // Sync Buttons
+        // Sync Buttons
     document.getElementById('btn-login').addEventListener('click', loginAccount);
     document.getElementById('btn-logout').addEventListener('click', logoutAccount);
+    
+    // Export / Import
+    document.getElementById('btn-export-data').addEventListener('click', exportData);
+    document.getElementById('btn-import-data').addEventListener('click', () => {
+        document.getElementById('import-file-input').click();
+    });
+    document.getElementById('import-file-input').addEventListener('change', importData);
     
     // Close modals on outside click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
