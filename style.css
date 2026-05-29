@@ -44,6 +44,27 @@ body.theme-cyber {
   --font-family: 'Orbitron', sans-serif;
 }
 
+body.theme-notion {
+  --bg-color: #f7f6f3;
+  --surface-color: #ffffff;
+  --surface-color-light: #f1efeb;
+  --primary-color: #5645d4;
+  --primary-hover: #4534b3;
+  --text-main: #37352f;
+  --text-muted: rgba(55, 53, 47, 0.68);
+  --border-color: #e6e1da;
+  --danger-color: #e03131;
+  --success-color: #1aae39;
+  --active-color: #5645d4;
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 8px 24px rgba(55, 53, 47, 0.06);
+  --shadow-glow: none;
+  --clock-glow: none;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -129,6 +150,11 @@ input, button, select, textarea { font-family: inherit; }
 }
 .header-avatar:hover { transform: scale(1.05); }
 .theme-minimal .header-avatar { border-color: var(--border-color); }
+.theme-notion .header-avatar {
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(55, 53, 47, 0.08);
+}
 
 /* Header Clock */
 .live-clock {
@@ -156,6 +182,9 @@ input, button, select, textarea { font-family: inherit; }
   background: linear-gradient(to top, var(--bg-color) 80%, transparent); pointer-events: none;
   display: flex; justify-content: center; z-index: 30;
 }
+.theme-notion .bottom-bar {
+  background: linear-gradient(to top, rgba(247, 246, 243, 0.97) 72%, rgba(247, 246, 243, 0));
+}
 
 /* Utilities */
 .section-header { display: flex; justify-content: space-between; align-items: center; margin: 2rem 0 1rem; }
@@ -178,6 +207,27 @@ button:active { transform: scale(0.96); }
 .icon-btn-ghost { padding: 0.625rem; color: var(--text-muted); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: var(--transition); min-width: 44px; min-height: 44px; }
 .icon-btn-ghost:hover { color: var(--active-color); background: var(--surface-color-light); }
 .theme-minimal .icon-btn-ghost:hover { background: var(--surface-color-light); }
+.theme-notion .icon-btn,
+.theme-notion .icon-btn-ghost {
+  border-radius: 12px;
+}
+.theme-notion .icon-btn {
+  background: rgba(255, 255, 255, 0.9);
+}
+.theme-notion .icon-btn-ghost:hover {
+  background: rgba(86, 69, 212, 0.08);
+  color: var(--primary-color);
+}
+.theme-notion .btn-primary {
+  box-shadow: 0 10px 20px rgba(86, 69, 212, 0.18);
+}
+.theme-notion .btn-primary:hover {
+  box-shadow: 0 12px 24px rgba(86, 69, 212, 0.22);
+}
+.theme-notion .btn-save,
+.theme-notion .btn-ghost {
+  background: #fff;
+}
 .back-btn { background: transparent; border: none; margin-left: -10px; width: 40px; }
 .back-btn:hover { background: var(--surface-color); }
 .icon-btn-small { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent; color: var(--text-muted); transition: var(--transition); border: 1px solid transparent; }
@@ -203,7 +253,15 @@ button:active { transform: scale(0.96); }
 }
 .form-input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
 .form-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+.theme-notion .form-input {
+  background: #fffefc;
+}
+.theme-notion .form-input:focus {
+  box-shadow: 0 0 0 3px rgba(86, 69, 212, 0.12);
+}
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+.theme-minimal input[type="date"]::-webkit-calendar-picker-indicator,
+.theme-notion input[type="date"]::-webkit-calendar-picker-indicator { filter: none; }
 
 /* Home: Workouts List */
 .workouts-list { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -236,6 +294,49 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .workout-card-title { font-size: 1.1rem; font-weight: 800; margin: 0.25rem 0 0; color: var(--text-main); }
 .workout-card-stats { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
 .stat-badge { background: var(--surface-color-light); padding: 0.35rem 0.6rem; border-radius: 8px; font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem; border: 1px solid var(--border-color); }
+.theme-notion .app,
+.theme-notion .screen,
+.theme-notion .header {
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(247, 246, 243, 0.96));
+}
+.theme-notion .header {
+  backdrop-filter: blur(10px);
+}
+.theme-notion .workout-card,
+.theme-notion .form-card,
+.theme-notion .exercise-edit-card,
+.theme-notion .exercise-view-card,
+.theme-notion .calendar-container,
+.theme-notion .day-summary-card,
+.theme-notion .favorite-item,
+.theme-notion .sync-code-box,
+.theme-notion .modal-dialog,
+.theme-notion .progress-bar-container {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(252, 251, 248, 0.98));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 10px 28px rgba(55, 53, 47, 0.06);
+}
+.theme-notion .workout-card::before {
+  width: 4px;
+  opacity: 0.9;
+}
+.theme-notion .workout-card.is-active {
+  border-color: rgba(86, 69, 212, 0.35);
+  background:
+    linear-gradient(180deg, rgba(244, 241, 255, 0.98), rgba(255, 255, 255, 0.98));
+}
+.theme-notion .stat-badge,
+.theme-notion .stat-chip,
+.theme-notion .exercise-number,
+.theme-notion .exercises-count {
+  background: #f3f0ff;
+  color: #4b3db7;
+  border-color: rgba(86, 69, 212, 0.14);
+}
 
 /* Calendar */
 .calendar-container {
@@ -307,6 +408,16 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .theme-minimal .calendar-day.has-workout {
   background: rgba(232, 62, 140, 0.05);
 }
+.theme-notion .calendar-day {
+  border-radius: 12px;
+}
+.theme-notion .calendar-day.has-workout {
+  background: rgba(86, 69, 212, 0.08);
+}
+.theme-notion .calendar-day.today {
+  border-color: rgba(86, 69, 212, 0.35);
+  background: rgba(86, 69, 212, 0.05);
+}
 
 /* Day Summary */
 .day-summary-card {
@@ -358,6 +469,10 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .exercise-view-card.done .stat-chip { opacity: 0.6; }
 .stat-chip .accent-text { color: var(--primary-color); margin-left: 2px; }
 .exercise-view-comment { font-size: 0.875rem; color: var(--text-muted); font-style: italic; background: rgba(255,255,255,0.03); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border-left: 2px solid var(--border-color); margin-top: 0.75rem; }
+.theme-notion .exercise-view-comment {
+  background: rgba(86, 69, 212, 0.04);
+  border-left-color: rgba(86, 69, 212, 0.25);
+}
 
 /* Custom Checkbox */
 .checkbox-wrapper { display: flex; align-items: center; justify-content: center; padding-top: 0.25rem; }
@@ -376,6 +491,19 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: flex-end; justify-content: center; transition: opacity 0.3s; }
 .modal-overlay.hidden { opacity: 0; pointer-events: none; }
 .modal-sheet { background: var(--bg-color); width: 100%; max-width: 600px; border-radius: 28px 28px 0 0; padding: 1.5rem; transform: translateY(0); transition: transform 0.4s cubic-bezier(0.25, 1, 0.2, 1); border-top: 1px solid var(--border-color); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); max-height: 85vh; display: flex; flex-direction: column; }
+.theme-notion .modal-overlay {
+  background: rgba(33, 28, 20, 0.22);
+  backdrop-filter: blur(14px);
+}
+.theme-notion .modal-sheet {
+  background:
+    linear-gradient(180deg, rgba(253, 252, 250, 0.98), rgba(247, 246, 243, 0.98));
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -20px 45px rgba(55, 53, 47, 0.12);
+}
+.theme-notion .modal-dialog {
+  box-shadow: 0 18px 40px rgba(55, 53, 47, 0.14);
+}
 .modal-overlay.hidden .modal-sheet { transform: translateY(100%); }
 .modal-handle { width: 48px; height: 5px; background: var(--border-color); border-radius: 3px; margin: 0 auto 1.5rem; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
@@ -427,6 +555,9 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
 .theme-minimal .giant-clock-text {
   text-shadow: none;
 }
+.theme-notion .giant-clock-text {
+  letter-spacing: -4px;
+}
 
 /* Settings theme section */
 .settings-theme-section { padding: 1rem 0; }
@@ -466,6 +597,11 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
   opacity: 0.9;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   border-color: var(--primary-color);
+}
+.theme-notion .plateau-indicator {
+  background: #fff;
+  color: #4b3db7;
+  border-color: rgba(86, 69, 212, 0.16);
 }
 
 /* Drag and Drop Styles */
@@ -728,6 +864,10 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opaci
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.5rem;
+}
+.theme-notion .sync-code-box {
+  border-style: solid;
+  border-width: 1px;
 }
 
 .sync-code-label {

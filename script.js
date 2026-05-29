@@ -57,53 +57,6 @@ const viewExercisesList = document.getElementById('view-exercises-list');
 const progressFill = document.getElementById('progress-fill');
 const progressText = document.getElementById('progress-text');
 
-const LEGACY_TEXT_MAP = new Map([
-    ['¦Ц¦¬¦- ¦¬¦¦¦¦¦-', 'Жим лежа'],
-    ['¦ЯTА¦¬TБ¦¦¦+¦-¦-¦¬TП TБ¦- TИTВ¦-¦-¦¦¦-¦¦', 'Приседания со штангой'],
-    ['¦бTВ¦-¦-¦-¦-¦-TП TВTП¦¦¦-', 'Становая тяга'],
-    ['¦Я¦-¦+TВTП¦¦¦¬¦-¦-¦-¦¬TП', 'Подтягивания'],
-    ['¦ЮTВ¦¦¦¬¦-¦-¦-¦¬TП ¦-¦- ¦-TАTГTБTМTПTЕ', 'Отжимания на брусьях'],
-    ['¦У¦¬¦¬¦¦TАTН¦¦TБTВ¦¦¦-¦¬¦¬TП', 'Гиперэкстензия'],
-    ['¦вTП¦¦¦- ¦-¦¦TАTЕ¦-¦¦¦¦¦- ¦-¦¬¦-¦¦¦-', 'Тяга верхнего блока'],
-    ['¦вTП¦¦¦- TИTВ¦-¦-¦¦¦¬ ¦- ¦-¦-¦¦¦¬¦-¦-¦¦', 'Тяга штанги в наклоне'],
-    ['¦Ц¦¬¦- ¦¦¦-¦-TВ¦¦¦¬¦¦¦¦ TБ¦¬¦+TП', 'Жим гантелей сидя'],
-    ['¦Я¦-¦+TК¦¦¦- ¦-¦- ¦-¦¬TЖ¦¦¦¬TБ', 'Подъем на бицепс'],
-    ['¦Ъ¦-TВTОTИ¦-', 'Катюша'],
-    ['¦Т¦-¦¬¦¬¦¦', 'Валик'],
-    ['¦вTА¦¦¦-¦¬TА¦-¦-¦¦¦-', 'Тренировка'],
-    ['¦С¦¦¦¬ ¦-¦-¦¬¦-¦-¦-¦¬TП', 'Без названия'],
-    ['¦г¦¬TА¦-¦¦¦-¦¦¦-¦¬¦¦', 'Упражнений'],
-    ['¦Я¦-¦+TЕ¦-¦+TЛ', 'Подходы'],
-    ['¦Я¦-¦-TВ¦-TА¦¦¦-¦¬TП', 'Повторения'],
-    ['¦Т¦¦TБ (¦¦¦¦)', 'Вес (кг)'],
-    ['¦Ъ¦-¦-¦-¦¦¦-TВ¦-TА¦¬¦¦ (¦-¦¬TЖ¦¬¦-¦-¦-¦¬TМ¦-¦-)', 'Комментарий (необязательно)'],
-    ['¦ТTЛ¦¬¦-¦¬¦-¦¦¦-¦-', 'Выполнено'],
-    ['¦ЯTА¦-¦¦TА¦¦TБTБ', 'Прогресс'],
-    ['¦Т TНTВ¦-TВ ¦+¦¦¦-TМ тренировок ¦-¦¦ ¦-TЛ¦¬¦-.', 'В этот день тренировок не было.']
-]);
-
-function repairLegacyText(value) {
-    return LEGACY_TEXT_MAP.get(value) || value;
-}
-
-function repairWorkoutData(workout) {
-    if (!workout || typeof workout !== 'object') return workout;
-
-    const repaired = {
-        ...workout,
-        name: repairLegacyText(workout.name),
-        exercises: Array.isArray(workout.exercises)
-            ? workout.exercises.map(ex => ({
-                ...ex,
-                name: repairLegacyText(ex.name),
-                comment: repairLegacyText(ex.comment)
-            }))
-            : []
-    };
-
-    return repaired;
-}
-
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', async () => {
     await loadData();
@@ -113,39 +66,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadTheme();
     startClock();
     
-        // Register Service Worker for PWA
+    // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'none' })
+            navigator.serviceWorker.register('./service-worker.js')
                 .then(registration => {
-                    console.log('ServiceWorker registered:', registration.scope);
-
-                    // ¦ЯTА¦-¦-¦¦TАTП¦¦¦- ¦-¦-¦-¦-¦-¦¬¦¦¦-¦¬TП ¦¬TА¦¬ ¦¦¦-¦¦¦+¦-¦- ¦¬¦-¦¬TГTБ¦¦¦¦
+                    console.log('ServiceWorker registration successful: ', registration.scope);
+                    
+                    // Проверка обновлений при каждом запуске
                     registration.update();
 
-                    // ¦Ъ¦-¦¦¦+¦- ¦-¦-¦-TЛ¦¦ SW ¦-¦-¦¦¦+¦¦¦-
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('New SW installed, activating...');
-                                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    // Слушаем событие обновления
+                    registration.onupdatefound = () => {
+                        const installingWorker = registration.installing;
+                        installingWorker.onstatechange = () => {
+                            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // Новая версия найдена и установлена — перезагружаем
+                                console.log('New content available, reloading...');
+                                window.location.reload();
                             }
-                        });
-                    });
+                        };
+                    };
                 }, err => {
-                    console.log('ServiceWorker registration failed:', err);
+                    console.log('ServiceWorker registration failed: ', err);
                 });
-
-            // ¦Я¦¦TА¦¦¦¬¦-¦¦TАTГ¦¦¦-¦¦¦- TВ¦-¦¬TМ¦¦¦- ¦-¦+¦¬¦- TА¦-¦¬ ¦¬TА¦¬ TБ¦-¦¦¦-¦¦ ¦¦¦-¦-TВTА¦-¦¬¦¬¦¦TА¦-
-            let reloading = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!reloading) {
-                    reloading = true;
-                    console.log('SW updated, reloading...');
-                    window.location.reload();
-                }
-            });
         });
     }
     
@@ -159,39 +103,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadData() {
     try {
-        const workouts = await db.getAllWorkouts();
-        const repairedWorkouts = workouts.map(repairWorkoutData);
-        appData.workouts = repairedWorkouts;
+        appData.workouts = await db.getAllWorkouts();
         
         // Load settings
         const favorites = await db.getSetting('favorites');
-        const repairedFavorites = favorites && favorites.length > 0 ? favorites.map(repairLegacyText) : null;
-        if (repairedFavorites) appData.favorites = repairedFavorites;
+        if (favorites && favorites.length > 0) appData.favorites = favorites;
         
         const username = await db.getSetting('username');
-        appData.username = repairLegacyText(username) || null;
-
-        if (JSON.stringify(repairedWorkouts) !== JSON.stringify(workouts)) {
-            for (const workout of appData.workouts) {
-                await db.saveWorkout(workout);
-            }
-        }
-
-        if (repairedFavorites && JSON.stringify(repairedFavorites) !== JSON.stringify(favorites)) {
-            await db.saveSetting('favorites', appData.favorites);
-        }
-
-        if (username && appData.username !== username) {
-            await db.saveSetting('username', appData.username);
-        }
+        appData.username = username || null;
     } catch (e) {
         console.error("Error loading data from IndexedDB", e);
     }
 }
 
 async function saveData() {
-    // ¦нTВ¦- TДTГ¦-¦¦TЖ¦¬TП TВ¦¦¦¬¦¦TАTМ ¦- ¦-TБ¦-¦-¦-¦-¦-¦- TБ¦¬¦-TЕTА¦-¦-¦¬¦¬¦¬TАTГ¦¦TВ ¦¬¦¬¦-TА¦-¦-¦-¦-¦¦, 
-    // TВ¦-¦¦ ¦¦¦-¦¦ TВTА¦¦¦-¦¬TА¦-¦-¦¦¦¬ TБ¦-TЕTА¦-¦-TПTОTВTБTП ¦¬¦-¦+¦¬¦-¦¬¦+TГ¦-¦¬TМ¦-¦- TЗ¦¦TА¦¦¦¬ db.saveWorkout
+    // Эта функция теперь в основном синхронизирует избранное, 
+    // так как тренировки сохраняются индивидуально через db.saveWorkout
     await db.saveSetting('favorites', appData.favorites);
     updateDatalist();
     
@@ -261,10 +188,15 @@ function toggleGiantClock() {
 }
 
 // --- Theme Switching ---
+const THEMES = ['cyber', 'minimal', 'notion'];
+
 async function loadTheme() {
     let theme = await db.getSetting('theme');
     if (!theme) {
         theme = localStorage.getItem('gymtracker_theme') || 'cyber';
+    }
+    if (!THEMES.includes(theme)) {
+        theme = 'cyber';
     }
     if (theme) {
         currentTheme = theme;
@@ -275,7 +207,8 @@ async function loadTheme() {
 }
 
 async function toggleTheme() {
-    currentTheme = currentTheme === 'minimal' ? 'cyber' : 'minimal';
+    const currentIndex = THEMES.indexOf(currentTheme);
+    currentTheme = THEMES[(currentIndex + 1 + THEMES.length) % THEMES.length];
     // Mirror to localStorage for instant anti-flash read on next cold start
     try { localStorage.setItem('gymtracker_theme', currentTheme); } catch(e) {}
     applyTheme();
@@ -283,12 +216,16 @@ async function toggleTheme() {
 }
 
 function applyTheme() {
-    const isMinimal = currentTheme === 'minimal';
     const mascotPath = 'icons/rabbit_girl_new.png';
-    const bgColor    = isMinimal ? '#ffffff' : '#0d0f14';
+    const themeMeta = {
+        cyber:   { bgColor: '#0d0f14', label: 'Cyber' },
+        minimal: { bgColor: '#ffffff', label: 'Minimal' },
+        notion:  { bgColor: '#f7f6f3', label: 'Notion' }
+    };
+    const activeTheme = themeMeta[currentTheme] || themeMeta.cyber;
 
     // Toggle CSS classes on body
-    document.body.classList.remove('theme-minimal', 'theme-cyber');
+    document.body.classList.remove('theme-minimal', 'theme-cyber', 'theme-notion');
     document.body.classList.add(`theme-${currentTheme}`);
 
     // Update dynamic theme-color meta tag for browser chrome
@@ -298,7 +235,12 @@ function applyTheme() {
         metaTheme.name = 'theme-color';
         document.head.appendChild(metaTheme);
     }
-    metaTheme.content = bgColor;
+    metaTheme.content = activeTheme.bgColor;
+
+    const themeToggleBtn = document.getElementById('btn-save-settings');
+    if (themeToggleBtn) {
+        themeToggleBtn.textContent = `Тема: ${activeTheme.label}`;
+    }
 
     // Update all mascot image instances
     const headerAvatar = document.getElementById('header-avatar');
@@ -604,7 +546,7 @@ function renderEditExercises() {
             </div>
             
             <div class="form-group">
-                <input type="text" class="form-input ex-comment" placeholder="Комментарий (необязательно)" value="${ex.comment || ''}" data-index="${index}">
+                <input type="text" class="form-input ex-comment" placeholder="Комментарий (опционально)" value="${ex.comment || ''}" data-index="${index}">
             </div>
         `;
         
@@ -682,26 +624,28 @@ async function saveWorkout() {
         appData.workouts.push(currentWorkoutData);
     }
     
-    try {
-            await db.saveWorkout(currentWorkoutData);
-            updateDatalist();
-            renderHome();
-            showToast('Тренировка завершена и сохранена! ✅');
-
-            if (appData.username) {
-                await syncToCloud(true);
-            }
-
-            if (editingWorkoutId) {
-                openWorkoutView(currentWorkoutData.id);
-            } else {
-                navigateTo('home');
-            }
-        } catch (e) {
-            console.error('Ошибка сохранения тренировки (saveWorkout):', e);
-            showToast('Ошибка сохранения тренировки');
-        }
+    await db.saveWorkout(currentWorkoutData);
+    updateDatalist(); // Still want to update datalist if new exercises were added
+    renderHome();
+    
+    showToast('Тренировка сохранена');
+    
+    // Check for iOS congratulation
+    const showedCongrat = checkAndShowiOSCongratulation(currentWorkoutData);
+    
+    // Auto-sync to cloud if enabled
+    if (appData.username) {
+        syncToCloud(true);
     }
+
+    if (showedCongrat) return;
+
+    if (editingWorkoutId) {
+        openWorkoutView(currentWorkoutData.id); // Go back to view
+    } else {
+        navigateTo('home');
+    }
+}
 
 // --- View Screen ---
 function openWorkoutView(id) {
@@ -726,7 +670,7 @@ function renderViewExercises(wk) {
     if (wk.exercises.length === 0) {
         viewExercisesList.innerHTML = `
             <div class="empty-state" style="height: auto; padding: 2rem;">
-                <p class="empty-desc">В этой тренировке пока нет упражнений.</p>
+                <p class="empty-desc">В этой тренировке нет упражнений.</p>
             </div>
         `;
         return;
@@ -780,43 +724,16 @@ function renderViewExercises(wk) {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     const wk = appData.workouts.find(w => w.id === wkId);
     if (!wk) return;
-
+    
     const ex = wk.exercises.find(e => e.id === exId);
     if (!ex) return;
-
+    
     ex.done = !ex.done;
-
+    await db.saveWorkout(wk);
+    
     // Update UI
     const cardEl = checkboxEl.closest('.exercise-view-card');
     if (ex.done) {
@@ -824,64 +741,17 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     } else {
         cardEl.classList.remove('done');
     }
-
+    
     updateProgress(wk);
-    renderHome();
-
-    // If the workout is completed, save and notify the user
-    const total = wk.exercises.length;
-    const done = wk.exercises.filter(e => e.done).length;
-    const isCompleted = total > 0 && done === total;
-
-    if (isCompleted) {
-        // Ensure the workout is saved
-        await db.saveWorkout(wk);
-
-        // Sync completed workout to Supabase profile
-        if (appData.username) {
-            await syncCompletedWorkoutToProfile(wk);
-        }
-
-        // iPhone congratulations only for Katyusha
-        const isIPhone = navigator.userAgent.includes('iPhone');
-        const isKatusha = appData.username === 'Катюша';
-        const isValik = appData.username === 'Валик';
-        if (isIPhone && isKatusha) {
-            await showiOSCongratulation(wk);
-        } else if (!isValik) {
-            showToast('Тренировка завершена и сохранена! ✅');
-            navigateTo('home');
-        } else {
-            showToast('Тренировка завершена и сохранена! ✅');
-        }
-
-        // Auto-sync
-        if (appData.username) {
-            syncToCloud(true);
-        }
-    } else {
-        // Save intermediate changes
-        await db.saveWorkout(wk);
-        if (appData.username) {
-            syncToCloud(true);
-        }
+    renderHome(); // Update home screen stats silently
+    
+    // Auto-sync to cloud if enabled
+    if (appData.username) {
+        syncToCloud(true);
     }
-}
-
-// iOS congratulations for Katyusha
-async function showiOSCongratulation(wk) {
-    spawnConfetti();
-    const overlay = document.getElementById('ios-congratulations');
-    overlay.classList.remove('hidden');
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-        overlay.classList.add('active');
-    }));
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    overlay.classList.remove('active');
-    await new Promise(resolve => setTimeout(resolve, 600));
-    overlay.classList.add('hidden');
-    clearConfetti();
-    navigateTo('home');
+    
+    // Check for iOS congratulation when checking off the last item
+    checkAndShowiOSCongratulation(wk);
 }
 
 function updateCardPlateauBadge(cardEl, exercise) {
@@ -948,7 +818,7 @@ function getPlateauCount(exerciseName, weight, reps, currentWorkoutDate, current
     return count;
 }
 
-// тФАтФА iOS confetti helpers тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА
+// ── iOS confetti helpers ──────────────────────────────────────────────────
 function spawnConfetti() {
     const container = document.getElementById('ios-confetti-container');
     if (!container) return;
@@ -981,40 +851,39 @@ function clearConfetti() {
     if (c) c.innerHTML = '';
 }
 
+// ── Main iOS congratulation logic ─────────────────────────────────────────
+function checkAndShowiOSCongratulation(wk) {
+    const isIPhone = navigator.userAgent.includes('iPhone');
+    if (!isIPhone) return false;
 
+    const total = wk.exercises.length;
+    const done  = wk.exercises.filter(e => e.done).length;
 
+    if (total > 0 && done === total) {
+        const overlay = document.getElementById('ios-congratulations');
+        if (overlay) {
+            spawnConfetti();
+            overlay.classList.remove('hidden');
 
+            // Double rAF ensures transition fires after display:block
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                overlay.classList.add('active');
+            }));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            // Hold for 3 s, then fade out (200 ms) + navigate
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    clearConfetti();
+                    navigateTo('home');
+                }, 600);
+            }, 3000);
+            return true;
+        }
+    }
+    return false;
+}
 
 // --- Drag and Drop ---
 function initSortable(containerId, isEditMode) {
@@ -1138,7 +1007,7 @@ async function addFavorite() {
     }
 }
 
-// --- Settings (theme only тАФ no user name) ---
+// --- Settings (theme only — no user name) ---
 async function loadSettings() {
     // Nothing to load by name; theme is loaded separately via loadTheme()
 }
@@ -1146,7 +1015,7 @@ async function loadSettings() {
 async function saveSettings() {
     await toggleTheme();
     closeModal(modalSettings);
-    showToast('Тема сохранена');
+    showToast('Тема изменена');
 }
 
 // --- Modals Utils ---
@@ -1164,9 +1033,7 @@ const SUPABASE_KEY = 'sb_publishable_e1w5LQ8Jnjj2NGSuPrXZzA_ietBW25E';
 
 async function syncToCloud(silent = false) {
     if (!appData.username && silent) return;
-    
-    const btn = document.getElementById('btn-login');
-    
+
     try {
         const data = await db.exportAllData();
         const username = appData.username;
@@ -1188,10 +1055,28 @@ async function syncToCloud(silent = false) {
 
         if (!response.ok) throw new Error('Cloud save failed');
 
-        if (!silent) showToast('Данные синхронизированы');
+        if (!silent) showToast('Данные в облаке!');
     } catch (e) {
         console.error(e);
-        if (!silent) showToast('Ошибка синхронизации');
+        if (!silent) showToast('Ошибка сохранения в облако');
+    }
+}
+
+async function saveCurrentProfileToCloud() {
+    const btn = document.getElementById('btn-sync-profile');
+
+    if (!appData.username) {
+        showToast('Сначала войдите в профиль');
+        return;
+    }
+
+    try {
+        btn.disabled = true;
+        btn.textContent = 'Сохранение...';
+        await syncToCloud(false);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Сохранить тренировки в облако';
     }
 }
 
@@ -1220,11 +1105,11 @@ async function loginAccount() {
         
         // If account exists, ask to import
         if (result && result.length > 0) {
-            if (confirm(`Для профиля "${name}" найдены данные. Загрузить их вместо текущих?`)) {
+            if (confirm(`Найдена резервная копия для "${name}". Загрузить её и заменить текущие данные?`)) {
                 await db.importAllData(result[0].data);
                 appData.username = name;
                 await db.saveSetting('username', name);
-                showToast('Аккаунт найден. Данные загружены...');
+                showToast('Данные загружены! Перезагрузка...');
                 setTimeout(() => window.location.reload(), 1500);
                 return;
             }
@@ -1247,7 +1132,7 @@ async function loginAccount() {
 }
 
 async function logoutAccount() {
-    if (confirm('Выйти из аккаунта? Автосохранение в облако прекратится.')) {
+    if (confirm('Выйти из аккаунта? Авто-сохранение в облако прекратится.')) {
         appData.username = null;
         await db.saveSetting('username', null);
         updateSettingsUI();
@@ -1270,88 +1155,6 @@ function updateSettingsUI() {
     }
 }
 
-
-// тФАтФА ¦б¦-TЕTА¦-¦-¦¦¦-¦¬¦¦ ¦¬¦-¦-¦¦TАTИTС¦-¦-¦-¦¦ TВTА¦¦¦-¦¬TА¦-¦-¦¦¦¬ ¦- ¦¬TА¦-TД¦¬¦¬TМ Supabase тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА
-async function syncCompletedWorkoutToProfile(workout) {
-    if (!appData.username) return;
-
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_profiles`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify({
-                username: appData.username,
-                workout_id: workout.id,
-                workout_data: workout,
-                completed_at: new Date().toISOString()
-            })
-        });
-
-        if (!response.ok) throw new Error('Profile save failed');
-    } catch (e) {
-        console.error('Ошибка при синхронизации профиля:', e);
-    }
-}
-
-// тФАтФА ¦н¦¦TБ¦¬¦-TАTВ / ¦Ш¦-¦¬¦-TАTВ ¦+¦-¦-¦-TЛTЕ тФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФАтФА
-async function exportData() {
-    try {
-        const data = await db.exportAllData();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const dateStr = getTodayDateStr();
-        a.download = `gymtracker_backup_${dateStr}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('✅ Данные экспортированы');
-    } catch (e) {
-        console.error('Ошибка экспорта:', e);
-        showToast('❌ Ошибка экспорта');
-    }
-}
-
-async function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    try {
-        const text = await file.text();
-        const data = JSON.parse(text);
-        
-        if (!data.workouts || !data.settings) {
-            showToast('❌ Неверный формат файла');
-            return;
-        }
-        
-        // ¦Я¦-¦¦¦-¦¬TЛ¦-¦-¦¦¦- ¦¬¦-¦+TВ¦-¦¦TА¦¦¦+¦¦¦-¦¬¦¦
-        if (!confirm(`Загрузить ${data.workouts.length} тренировок? Текущие данные будут заменены.`)) {
-            return;
-        }
-        
-        await db.importAllData(data);
-        
-        // ¦Я¦¦TА¦¦¦¬¦-¦¦TАTГ¦¦¦-¦¦¦- ¦+¦-¦-¦-TЛ¦¦
-        await loadData();
-        renderHome();
-        showToast(`✅ Загружено ${data.workouts.length} тренировок`);
-        
-        // ¦б¦-TА¦-TБ input, TЗTВ¦-¦-TЛ ¦-¦-¦¦¦-¦- ¦-TЛ¦¬¦- ¦-TЛ¦-TА¦-TВTМ TВ¦-TВ ¦¦¦¦ TД¦-¦¦¦¬ ¦¬¦-¦-TВ¦-TА¦-¦-
-        event.target.value = '';
-    } catch (e) {
-        console.error('Ошибка импорта:', e);
-        showToast('❌ Ошибка импорта');
-        event.target.value = '';
-    }
-}
 
 // --- Events Setup ---
 function setupEventListeners() {
@@ -1423,16 +1226,10 @@ function setupEventListeners() {
         if (e.key === 'Enter') addFavorite();
     });
 
-        // Sync Buttons
+    // Sync Buttons
     document.getElementById('btn-login').addEventListener('click', loginAccount);
     document.getElementById('btn-logout').addEventListener('click', logoutAccount);
-    
-    // Export / Import
-    document.getElementById('btn-export-data').addEventListener('click', exportData);
-    document.getElementById('btn-import-data').addEventListener('click', () => {
-        document.getElementById('import-file-input').click();
-    });
-    document.getElementById('import-file-input').addEventListener('change', importData);
+    document.getElementById('btn-sync-profile').addEventListener('click', saveCurrentProfileToCloud);
     
     // Close modals on outside click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
@@ -1457,8 +1254,3 @@ function setupEventListeners() {
         });
     }
 }
-
-
-
-
-
