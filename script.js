@@ -1039,13 +1039,13 @@ async function syncToCloud(silent = false) {
         const username = appData.username;
         if (!username) return;
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_sync`, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_sync?on_conflict=sync_code`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'apikey': SUPABASE_KEY,
                 'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'resolution=merge-duplicates'
+                'Prefer': 'resolution=merge-duplicates,return=representation'
             },
             body: JSON.stringify({
                 sync_code: username,
@@ -1053,12 +1053,18 @@ async function syncToCloud(silent = false) {
             })
         });
 
-        if (!response.ok) throw new Error('Cloud save failed');
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Cloud save failed: ${response.status} ${errorText}`);
+        }
 
-        if (!silent) showToast('Данные в облаке!');
+        if (!silent) showToast('Тренировки сохранены в облако');
     } catch (e) {
         console.error(e);
-        if (!silent) showToast('Ошибка сохранения в облако');
+        if (!silent) {
+            const isProfileMissing = String(e.message || '').includes('23505') || String(e.message || '').includes('conflict');
+            showToast(isProfileMissing ? 'Не удалось обновить профиль в облаке' : 'Ошибка сохранения в облако');
+        }
     }
 }
 
