@@ -128,6 +128,21 @@ async function saveData() {
     }
 }
 
+function isWorkoutCompleted(wk) {
+    if (!wk || !Array.isArray(wk.exercises)) return false;
+
+    return wk.exercises.length > 0 && wk.exercises.every(ex => ex.done);
+}
+
+async function syncCompletedWorkoutToCloud(wk) {
+    if (!appData.username || !isWorkoutCompleted(wk)) return false;
+
+    const synced = await syncToCloud(true);
+    if (synced) return true;
+
+    return syncToCloud(false);
+}
+
 function injectDatalist() {
     const datalist = document.createElement('datalist');
     datalist.id = 'favorites-datalist';
@@ -633,9 +648,13 @@ async function saveWorkout() {
     // Check for iOS congratulation
     const showedCongrat = checkAndShowiOSCongratulation(currentWorkoutData);
     
-    // Auto-sync to cloud if enabled
+    // Auto-sync to cloud if enabled. Completed workouts wait for Supabase.
     if (appData.username) {
-        syncToCloud(true);
+        if (isWorkoutCompleted(currentWorkoutData)) {
+            await syncCompletedWorkoutToCloud(currentWorkoutData);
+        } else {
+            syncToCloud(true);
+        }
     }
 
     if (showedCongrat) return;
@@ -731,6 +750,7 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     const ex = wk.exercises.find(e => e.id === exId);
     if (!ex) return;
     
+    const wasCompleted = isWorkoutCompleted(wk);
     ex.done = !ex.done;
     await db.saveWorkout(wk);
     
@@ -745,9 +765,13 @@ async function toggleExerciseStatus(wkId, exId, checkboxEl) {
     updateProgress(wk);
     renderHome(); // Update home screen stats silently
     
-    // Auto-sync to cloud if enabled
+    // Auto-sync to cloud if enabled. Finishing the workout must reach Supabase.
     if (appData.username) {
-        syncToCloud(true);
+        if (!wasCompleted && isWorkoutCompleted(wk)) {
+            await syncCompletedWorkoutToCloud(wk);
+        } else {
+            syncToCloud(true);
+        }
     }
     
     // Check for iOS congratulation when checking off the last item
@@ -855,6 +879,9 @@ function clearConfetti() {
 function checkAndShowiOSCongratulation(wk) {
     const isIPhone = navigator.userAgent.includes('iPhone');
     if (!isIPhone) return false;
+
+    const activeUser = (appData.username || '').trim().toLocaleLowerCase('ru-RU');
+    if (activeUser !== 'катюша') return false;
 
     const total = wk.exercises.length;
     const done  = wk.exercises.filter(e => e.done).length;
@@ -1032,12 +1059,12 @@ const SUPABASE_URL = 'https://ccekjgkopqkshxhdjezd.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_e1w5LQ8Jnjj2NGSuPrXZzA_ietBW25E';
 
 async function syncToCloud(silent = false) {
-    if (!appData.username && silent) return;
+    if (!appData.username && silent) return false;
 
     try {
         const data = await db.exportAllData();
         const username = appData.username;
-        if (!username) return;
+        if (!username) return false;
         
         const response = await fetch(`${SUPABASE_URL}/rest/v1/gym_sync?on_conflict=sync_code`, {
             method: 'POST',
@@ -1059,12 +1086,14 @@ async function syncToCloud(silent = false) {
         }
 
         if (!silent) showToast('Тренировки сохранены в облако');
+        return true;
     } catch (e) {
         console.error(e);
         if (!silent) {
             const isProfileMissing = String(e.message || '').includes('23505') || String(e.message || '').includes('conflict');
             showToast(isProfileMissing ? 'Не удалось обновить профиль в облаке' : 'Ошибка сохранения в облако');
         }
+        return false;
     }
 }
 
